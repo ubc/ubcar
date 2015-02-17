@@ -1,8 +1,9 @@
 UBC Augmented Reality
 =====================
 
-Contributors: Nathan Sidles, Eduardo Jovel
-Tags: WordPress, Google Maps, wiki, embed, wiki-embed, augmented reality, AR
+**Contributors**: Nathan Sidles, Eduardo Jovel
+
+**Tags**: WordPress, Google Maps, wiki, embed, wiki-embed, augmented reality, AR
 
 UBCAR is a community-driven, wiki-inspired, deeply interactive WordPress plugin. It allows WordPress administrators and editors to upload and display geographic locations and associate them with tours, layers, and media files (like images, video links, and embedded webpages).
 
@@ -24,11 +25,9 @@ Use
 ---
 1. Type the shortcode [ubcar-map] on a WordPress Page to have it display the UBCAR frontend there.
 2. UBCAR has four special GET request fields that can be called from the UBCAR frontend page URL:
-
-- **point**: displays a single point (e.g., "?point=1")
-- **layer**: displays a single layer (e.g., "?layer=2")
-- **tour**: displays a single tour (e.g., "?tour=3")
-
+ - **point**: displays a single point (e.g., "?point=1")
+ - **layer**: displays a single layer (e.g., "?layer=2")
+ - **tour**: displays a single tour (e.g., "?tour=3")
 3. UBCAR can also export its points as a KML file with the 'ubcar_download_kml' GET request field. This can be filtered by the 'ubcar_layers[]', 'ubcar_tours[]', and 'ubcar_search' fields.
 
 Future Expansions
