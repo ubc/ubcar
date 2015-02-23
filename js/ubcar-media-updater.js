@@ -200,7 +200,7 @@ function display_medias( response ) {
         htmlString += "</td><td>";
         htmlString += response[i].description;
         htmlString += "</td><td>";
-        if( response.location != null ) {
+        if( response[i].location != null ) {
             htmlString += response[i].location.title + ' (#' + response[i].location.ID + ')';
         }
         htmlString += "</td><td>";
