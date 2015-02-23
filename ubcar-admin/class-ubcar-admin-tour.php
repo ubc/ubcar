@@ -53,7 +53,7 @@
         function menu_initializer() {
             wp_register_script( 'ubcar_control_panel_tour_updater_script', plugins_url( 'js/ubcar-tour-updater.js', dirname(__FILE__) ) );
             wp_enqueue_script( 'ubcar_control_panel_script', array( 'jquery' ) );
-            wp_enqueue_script( 'ubcar_control_panel_tour_updater_script', array( 'jquery' ) );
+            wp_enqueue_script( 'ubcar_control_panel_tour_updater_script', array( 'jquery', 'ubcar_control_panel_script' ) );
             wp_localize_script( 'ubcar_control_panel_tour_updater_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
             wp_enqueue_script( 'jquery-ui-sortable', array( 'jquery' ) );
             $ubcar_locations = get_posts( array( 'posts_per_page' => -1, 'order' => 'ASC', 'post_type' => 'ubcar_point' ) );
@@ -140,7 +140,9 @@
                 );
                 
                 $ubcar_tour_id = wp_insert_post( $ubcar_tour_post );
-                add_post_meta( $ubcar_tour_id, 'ubcar_tour_locations', $_POST['ubcar_tour_locations'] );
+                if( isset( $_POST['ubcar_tour_locations'] ) ) {
+                    add_post_meta( $ubcar_tour_id, 'ubcar_tour_locations', $_POST['ubcar_tour_locations'] );
+                }
                 echo 'Submission uploaded!';
             }
             
@@ -321,7 +323,9 @@
                         'post_content' => $_POST['ubcar_tour_description']
                     );
                     wp_update_post( $update_array );
-                    update_post_meta( $_POST['ubcar_tour_edit_id'], 'ubcar_tour_locations', $_POST['ubcar_tour_locations']  );
+                    if( isset( $_POST['ubcar_tour_locations'] ) ) {
+                        update_post_meta( $_POST['ubcar_tour_edit_id'], 'ubcar_tour_locations', $_POST['ubcar_tour_locations'] );
+                    }
                     echo wp_send_json( $this->ubcar_get_tour( $_POST['ubcar_tour_edit_id'] ) );
                 }
             }

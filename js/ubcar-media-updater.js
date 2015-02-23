@@ -2,8 +2,8 @@ jQuery(document).ready(function($) {
     
     var data = {
         'action' : 'media_initial',
-        'ubcar_media_offset' : jQuery( "#ubcar_media_display_count" ).val(),
-        'ubcar_author_name': jQuery( "#ubcar-author-name" ).val()
+        'ubcar_media_offset' : escape_html( jQuery( "#ubcar_media_display_count" ).val() ),
+        'ubcar_author_name': escape_html( jQuery( "#ubcar-author-name" ).val() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_medias(response);
@@ -95,8 +95,8 @@ jQuery(document).ready(function($) {
 function forward_medias() {
     var data = {
         'action' : 'media_forward',
-        'ubcar_media_offset' : jQuery( "#ubcar_media_display_count" ).html(),
-        'ubcar_author_name': jQuery( "#ubcar-author-name" ).val()
+        'ubcar_media_offset' : escape_html( jQuery( "#ubcar_media_display_count" ).html() ),
+        'ubcar_author_name': escape_html( jQuery( "#ubcar-author-name" ).val() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_medias(response);
@@ -118,8 +118,8 @@ function forward_medias() {
 function backward_medias() {
     var data = {
         'action' : 'media_backward',
-        'ubcar_media_offset' : jQuery( "#ubcar_media_display_count" ).html(),
-        'ubcar_author_name': jQuery( "#ubcar-author-name" ).val()
+        'ubcar_media_offset' : escape_html( jQuery( "#ubcar_media_display_count" ).html() ),
+        'ubcar_author_name': escape_html( jQuery( "#ubcar-author-name" ).val() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_medias(response);
@@ -142,9 +142,9 @@ function delete_medias( delete_id ) {
     if(confirm("Are you sure you want to delete this media?")){
         var data = {
             'action' : 'media_delete',
-            'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+            'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
             'ubcar_media_delete_id' : delete_id,
-            'ubcar_author_name': jQuery( "#ubcar-author-name" ).val()
+            'ubcar_author_name': escape_html( jQuery( "#ubcar-author-name" ).val() )
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
             if( response === '1' ) {
@@ -200,7 +200,9 @@ function display_medias( response ) {
         htmlString += "</td><td>";
         htmlString += response[i].description;
         htmlString += "</td><td>";
-        htmlString += response[i].location.title + ' (#' + response[i].location.ID + ')';
+        if( response.location != null ) {
+            htmlString += response[i].location.title + ' (#' + response[i].location.ID + ')';
+        }
         htmlString += "</td><td>";
         htmlString += '<select multiple disabled size="5">';
         for( j in response[i].layers ) {
@@ -242,7 +244,7 @@ function display_medias( response ) {
 function edit_medias( edit_id ) {
         var data = {
             'action' : 'media_edit',
-            'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+            'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
             'ubcar_media_edit_id' : edit_id
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
@@ -333,7 +335,7 @@ function edit_medias( edit_id ) {
  */
 function edit_medias_submit( thisthis, old_selected_layers, old_location ) {
     var edit_id = jQuery( thisthis ).attr("id").replace('ubcar_media_edit_submit_', '');
-    var new_selected_layers = jQuery( "#ubcar_media_edit_layers_" + edit_id ).val();
+    var new_selected_layers = escape_html( jQuery( "#ubcar_media_edit_layers_" + edit_id ).val() );
     var removed_selected_layers = old_selected_layers;
     var added_selected_layers = [];
     var added_selected_layers_to_send = [];
@@ -363,12 +365,12 @@ function edit_medias_submit( thisthis, old_selected_layers, old_location ) {
     }
     var submit_data = {
         'action' : 'media_edit_submit',
-        'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+        'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
         'ubcar_media_edit_id' : edit_id,
-        'ubcar_media_title': jQuery( "#ubcar_media_edit_title_" + edit_id ).val(),
-        'ubcar_media_description': jQuery( "#ubcar_media_edit_description_" + edit_id ).val(),
+        'ubcar_media_title': escape_html( jQuery( "#ubcar_media_edit_title_" + edit_id ).val() ),
+        'ubcar_media_description': escape_html( jQuery( "#ubcar_media_edit_description_" + edit_id ).val() ),
         'ubcar_media_old_location': old_location,
-        'ubcar_media_location': jQuery( "#ubcar_media_edit_location_" + edit_id ).val(),
+        'ubcar_media_location': escape_html( jQuery( "#ubcar_media_edit_location_" + edit_id ).val() ),
         'ubcar_media_layers': new_selected_layers,
         'ubcar_media_added_layers': added_selected_layers_to_send,
         'ubcar_media_removed_layers': removed_selected_layers_to_send,
@@ -378,6 +380,7 @@ function edit_medias_submit( thisthis, old_selected_layers, old_location ) {
         if( response == false ) {
             alert( "Sorry, you do not have permission to delete that media." );
         } else {
+            alert( response );
             var htmlString = '<td>';
             htmlString += response.ID;
             htmlString += '</td><td style="text-align: center">';

@@ -86,7 +86,7 @@
         function menu_initializer() {
             wp_register_script( 'ubcar_control_panel_media_updater_script', plugins_url( 'js/ubcar-media-updater.js', dirname(__FILE__) ) );
             wp_enqueue_script( 'ubcar_control_panel_script', array( 'jquery' ) );
-            wp_enqueue_script( 'ubcar_control_panel_media_updater_script', array( 'jquery' ) );
+            wp_enqueue_script( 'ubcar_control_panel_media_updater_script', array( 'jquery', 'ubcar_control_panel_script' ) );
             wp_localize_script( 'ubcar_control_panel_media_updater_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
             $ubcar_locations = get_posts( array( 'posts_per_page' => -1, 'order' => 'ASC', 'post_type' => 'ubcar_point' ) );
             $ubcar_layers = get_posts( array( 'posts_per_page' => -1, 'order' => 'ASC', 'post_type' => 'ubcar_layer' ) );
@@ -129,7 +129,7 @@
                                 <?php
                                     $gallery_images = get_posts( array( 'posts_per_page' => -1, 'order' => 'ASC', 'post_type' => 'attachment', 'post_mime_type' => 'image/png, image/jpeg' ) );
                                     foreach( $gallery_images as $gallery_image ) {
-                                        echo '<option value="' . $gallery_image->ID. '">' . $gallery_image->post_title . ' (#' . $gallery_image->ID . ')</option>';
+                                        echo '<option value="' . $gallery_image->ID. '">' . $this->ubcar_media_data_cleaner( $gallery_image->post_title ) . ' (#' . $gallery_image->ID . ')</option>';
                                     }
                                 ?>
                             </select>
@@ -152,8 +152,11 @@
                         </td>
                     </tr>
                     <tr class="ubcar-add-media-video">
-                        <th scope="row"><label for="ubcar_video_url">Video URL</label></th>
-                        <td><input name="ubcar_video_url" type="text" id="ubcar_video_url" value="" class="regular-text ltr" /></td>
+                        <th scope="row"><label for="ubcar_video_url">Video ID</label></th>
+                        <td>
+                            <input name="ubcar_video_url" type="text" id="ubcar_video_url" value="" class="regular-text ltr" />
+                            <div id="ubcar_video_explainer">Insert only the video ID (as highlighted): <span style="color:grey;">https://www.youtube.com/watch?v=</span><span style="background:red;">ZQVehnkc68M</span></div>
+                        </td>
                     </tr>
                     <tr class="ubcar-add-media-audio">
                         <th scope="row"><label for="ubcar_audio_type">Audio Type</label></th>
@@ -161,6 +164,7 @@
                             <select id="ubcar_audio_type" name="ubcar_audio_type" class="">
                                 <option value="soundcloud">SoundCloud</option>
                             </select>
+                            <div id="ubcar_audio_explainer">Insert only the audio ID (as highlighted): <span style="color:grey;">&lt;iframe width=&quot;100%&quot; height=&quot;450&quot; scrolling=&quot;no&quot; frameborder=&quot;no&quot; <br />src=&quot;https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/</span><span style="background:red">138550276</span><br /><span style="color:grey">&amp;amp;auto_play=false&amp;amp;hide_related=false&amp;amp;show_comments=true&amp;amp;show_user=true<br />&amp;amp;show_reposts=false&amp;amp;visual=true&quot;&gt;&lt;/iframe&gt;</span></div>
                         </td>
                     </tr>
                     <tr class="ubcar-add-media-audio">
@@ -252,7 +256,7 @@
         }
         
         /**
-         * This is function detects if a media file upload is being request,
+         * This is function detects if a media file upload is being requested,
          * performs the upload, and redirects to ubcar-data/
          * ubcar-post-redirect-get.php.
          * 
@@ -269,8 +273,8 @@
                     $ubcar_url = "";
                     $ubcar_media_post_meta = array();
                     $ubcar_media_post = array(
-                        'post_title' => $_POST['ubcar_media_title'],
-                        'post_content' => $_POST['ubcar_media_description'],
+                        'post_title' => $this->ubcar_media_data_cleaner( $_POST['ubcar_media_title'] ),
+                        'post_content' => $this->ubcar_media_data_cleaner( $_POST['ubcar_media_description'] ),
                         'post_status' => 'publish',
                         'post_type' => 'ubcar_media'
                     );
@@ -306,11 +310,11 @@
                     if( $_POST['ubcar_media_type'] == 'imagewp' ) {
                         $ubcar_media_post_meta['type'] = 'image';
                     }
-                    $ubcar_media_post_meta['url'] = $ubcar_url;
-                    $ubcar_media_post_meta['location'] = $_POST['ubcar_media_location'];
+                    $ubcar_media_post_meta['url'] = $this->ubcar_media_data_cleaner( $ubcar_url );
+                    $ubcar_media_post_meta['location'] = $this->ubcar_media_data_cleaner( $_POST['ubcar_media_location'] );
                     $ubcar_media_post_meta['layers'] = array();
                     if( isset( $_POST['ubcar_media_layers'] ) ) {
-                        $ubcar_media_post_meta['layers'] = $_POST['ubcar_media_layers'];
+                        $ubcar_media_post_meta['layers'] = $this->ubcar_media_data_cleaner( $_POST['ubcar_media_layers'] );
                     }
                     if( isset( $_POST['ubcar_media_visibility'] ) ) {
                         $ubcar_media_post_meta['hidden'] = 'on';
@@ -379,6 +383,23 @@
         }
         
         /**
+         * This is the helper function for cleaning a set of ubcar_medium data
+         * sent by a user.
+         *
+         * @param string $ubcar_string_to_be_cleaned
+         * 
+         * @access public
+         * @return string
+         */
+        function ubcar_media_data_cleaner( $ubcar_string_to_be_cleaned ) {
+
+        $bad_characters  = array( "&",     "<",    ">",    '"',      "'",     "/",      "\n" );
+        $good_characters = array( "&amp;", "&lt;", "&gt;", '&quot;', '&#39;', '&#x2F;', '<br />');
+    
+        return str_replace( $bad_characters, $good_characters, $ubcar_string_to_be_cleaned );
+        }
+        
+        /**
          * This is a helper function for retrieving a single ubcar_medium datum
          * and metadata from the database.
          * 
@@ -416,7 +437,7 @@
             }
             $tempArray["location"] = $location_name;
             $ubcar_media_layer_names = array();
-            if( $ubcar_media_meta['layers'] != null ) {
+            if( $ubcar_media_meta['layers'] != null && is_array( $ubcar_media_meta['layers'] ) ) {
                 foreach( $ubcar_media_meta['layers'] as $ubcar_media_layer ) {
                     $layer = get_post( $ubcar_media_layer );
                     if($layer != null) {
@@ -592,7 +613,7 @@
                     );
                     $update_array_meta = get_post_meta( $_POST['ubcar_media_edit_id'], 'ubcar_media_meta', true );
                     $update_array_meta['location'] = $_POST['ubcar_media_location'];
-                    $update_array_meta['layers'] = $_POST['ubcar_media_layers'];
+                    $update_array_meta['layers'] = explode( ',', $_POST['ubcar_media_layers'] );
                     if( $_POST['ubcar_media_hidden'] == 'true' ) {
                         $update_array_meta['hidden'] = 'on';
                     } else {
@@ -668,12 +689,15 @@
                                 update_post_meta( $_POST['ubcar_media_old_location'], 'ubcar_point_media',  $old_location_media );
                             }
                         }
-                        foreach( $_POST['ubcar_media_layers'] as $layer ) {
-                            if( $layer != null ) {
-                                $layer_points = get_post_meta( $layer, 'ubcar_layer_points', true );
-                                $layer_points_index = array_search( array( $_POST['ubcar_media_edit_id'], $_POST['ubcar_media_old_location'] ), $layer_points );
-                                $layer_points[$layer_points_index] = array( $_POST['ubcar_media_edit_id'], $_POST['ubcar_media_location'] );
-                                update_post_meta( $layer, 'ubcar_layer_points', $layer_points );
+                        if( isset( $_POST['ubcar_media_layers'] ) ) {
+                            $layers_array = explode( ',', $_POST['ubcar_media_layers'] );
+                            foreach( $layers_array as $layer ) {
+                                if( $layer != 'null' && $layer != null ) {
+                                    $layer_points = get_post_meta( $layer, 'ubcar_layer_points', true );
+                                    $layer_points_index = array_search( array( $_POST['ubcar_media_edit_id'], $_POST['ubcar_media_old_location'] ), $layer_points );
+                                    $layer_points[$layer_points_index] = array( $_POST['ubcar_media_edit_id'], $_POST['ubcar_media_location'] );
+                                    update_post_meta( $layer, 'ubcar_layer_points', $layer_points );
+                                }
                             }
                         }
                     }

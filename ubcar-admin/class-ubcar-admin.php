@@ -131,7 +131,8 @@
 
         function menu_initializer() {
             wp_register_script( 'ubcar_control_panel_updater_script', plugins_url( 'js/ubcar-options-updater.js', dirname(__FILE__) ) );
-            wp_enqueue_script( 'ubcar_control_panel_updater_script', array( 'jquery' ) );
+            wp_enqueue_script( 'ubcar_control_panel_script', array( 'jquery' ) );
+            wp_enqueue_script( 'ubcar_control_panel_updater_script', array( 'jquery', 'ubcar_control_panel_script' ) );
             wp_localize_script( 'ubcar_control_panel_updater_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
             ?>
                 <h2>UBCAR Settings Page</h2>

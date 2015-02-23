@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
     });
     
     jQuery( "#ubcar_point_latlng_check" ).click(function() {
-        requested_latlng = new google.maps.LatLng(jQuery( "#ubcar_point_latitude" ).val(), jQuery( "#ubcar_point_longitude" ).val() );
+        requested_latlng = new google.maps.LatLng( escape_html( jQuery( "#ubcar_point_latitude" ).val() ), escape_html( jQuery( "#ubcar_point_longitude" ).val() ) );
         map.setCenter( requested_latlng );
         marker.setPosition( requested_latlng );
         marker.setMap( map );
@@ -63,12 +63,12 @@ jQuery(document).ready(function($) {
 function update_points() {
     var data = {
         'action': 'point_updater',
-        'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
-        'ubcar_point_title': jQuery( "#ubcar_point_title" ).val(),
-        'ubcar_point_description': jQuery( "#ubcar_point_description" ).val(),
-        'ubcar_point_latitude': jQuery( "#ubcar_point_latitude" ).val(),
-        'ubcar_point_longitude': jQuery( "#ubcar_point_longitude" ).val(),
-        'ubcar_point_tags': jQuery( "#ubcar_point_tags" ).val()
+        'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
+        'ubcar_point_title': escape_html( jQuery( "#ubcar_point_title" ).val() ),
+        'ubcar_point_description': escape_html( jQuery( "#ubcar_point_description" ).val() ),
+        'ubcar_point_latitude': escape_html( jQuery( "#ubcar_point_latitude" ).val() ),
+        'ubcar_point_longitude': escape_html( jQuery( "#ubcar_point_longitude" ).val() ),
+        'ubcar_point_tags': escape_html( jQuery( "#ubcar_point_tags" ).val() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         alert(response);
@@ -95,7 +95,7 @@ function update_points() {
 function forward_points() {
     var data = {
         'action' : 'point_forward',
-        'ubcar_point_offset' : jQuery( "#ubcar_point_display_count" ).html()
+        'ubcar_point_offset' : escape_html( jQuery( "#ubcar_point_display_count" ).html() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_points(response);
@@ -117,7 +117,7 @@ function forward_points() {
 function backward_points() {
     var data = {
         'action' : 'point_backward',
-        'ubcar_point_offset' : jQuery( "#ubcar_point_display_count" ).html()
+        'ubcar_point_offset' : escape_html( jQuery( "#ubcar_point_display_count" ).html() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_points(response);
@@ -140,7 +140,7 @@ function delete_points( delete_id ) {
     if(confirm("Are you sure you want to delete this point?")){
         var data = {
             'action' : 'point_delete',
-            'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+            'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
             'ubcar_point_delete_id' : delete_id
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
@@ -217,7 +217,7 @@ function display_points( response ) {
 function edit_points( edit_id ) {
         var data = {
             'action' : 'point_edit',
-            'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+            'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
             'ubcar_point_edit_id' : edit_id
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
@@ -271,13 +271,13 @@ function edit_points_submit( thisthis ) {
     var edit_id = jQuery( thisthis ).attr("id").replace('ubcar_point_edit_submit_', '');
     var submit_data = {
         'action' : 'point_edit_submit',
-        'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+        'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
         'ubcar_point_edit_id' : edit_id,
-        'ubcar_point_title': jQuery( "#ubcar_point_edit_title_" + edit_id ).val(),
-        'ubcar_point_description': jQuery( "#ubcar_point_edit_description_" + edit_id ).val(),
-        'ubcar_point_latitude': jQuery( "#ubcar_point_edit_latitude_" + edit_id ).val(),
-        'ubcar_point_longitude': jQuery( "#ubcar_point_edit_longitude_" + edit_id ).val(),
-        'ubcar_point_tags': jQuery( "#ubcar_point_edit_tags_" + edit_id ).val()
+        'ubcar_point_title': escape_html( jQuery( "#ubcar_point_edit_title_" + edit_id ).val() ),
+        'ubcar_point_description': escape_html( jQuery( "#ubcar_point_edit_description_" + edit_id ).val() ),
+        'ubcar_point_latitude': escape_html( jQuery( "#ubcar_point_edit_latitude_" + edit_id ).val() ),
+        'ubcar_point_longitude': escape_html( jQuery( "#ubcar_point_edit_longitude_" + edit_id ).val() ),
+        'ubcar_point_tags': escape_html( jQuery( "#ubcar_point_edit_tags_" + edit_id ).val() )
     };
     jQuery.post(ajax_object.ajax_url, submit_data, function(response) {
         if( response == false ) {

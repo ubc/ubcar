@@ -12,3 +12,19 @@ jQuery( "#ubcar-add-new-toggle" ).click(function() {
 });
 
 jQuery( "#ubcar-add-new-toggle" ).click();
+
+var entity_map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;',
+    "\n": '<br />'
+};
+
+function escape_html(string) {
+    return String(string).replace( /[&<>"'\/]|[\n]/g, function ( character_to_be_replaced ) {
+        return entity_map[character_to_be_replaced];
+    });
+}

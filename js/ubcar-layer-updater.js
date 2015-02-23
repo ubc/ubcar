@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
     
     var data = {
         'action' : 'layer_initial',
-        'ubcar_layer_offset' : jQuery( "#ubcar_layer_display_count" ).val()
+        'ubcar_layer_offset' : escape_html( jQuery( "#ubcar_layer_display_count" ).val() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_layers(response);
@@ -40,16 +40,16 @@ jQuery(document).ready(function($) {
 function update_layers() {
     var data = {
         'action': 'layer_updater',
-        'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
-        'ubcar_layer_title': jQuery( "#ubcar_layer_title" ).val(),
-        'ubcar_layer_description': jQuery( "#ubcar_layer_description" ).val(),
-        'ubcar_layer_password': jQuery( "#ubcar_layer_password" ).prop('checked')
+        'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
+        'ubcar_layer_title': escape_html( jQuery( "#ubcar_layer_title" ).val() ),
+        'ubcar_layer_description': escape_html( jQuery( "#ubcar_layer_description" ).val() ),
+        'ubcar_layer_password': escape_html( jQuery( "#ubcar_layer_password" ).prop('checked') )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         alert(response);
         data = {
             'action' : 'layer_initial',
-            'ubcar_layer_offset' : jQuery( "#ubcar_layer_display_count" ).val()
+            'ubcar_layer_offset' : escape_html( jQuery( "#ubcar_layer_display_count" ).val() )
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
             display_layers(response);
@@ -93,7 +93,7 @@ function forward_layers() {
 function backward_layers() {
     var data = {
         'action' : 'layer_backward',
-        'ubcar_layer_offset' : jQuery( "#ubcar_layer_display_count" ).html()
+        'ubcar_layer_offset' : escape_html( jQuery( "#ubcar_layer_display_count" ).html() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_layers(response);
@@ -116,7 +116,7 @@ function delete_layers( delete_id ) {
     if(confirm("Are you sure you want to delete this layer?")){
         var data = {
             'action' : 'layer_delete',
-            'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+            'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
             'ubcar_layer_delete_id' : delete_id
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
@@ -192,7 +192,7 @@ function display_layers( response ) {
 function edit_layers( edit_id ) {
         var data = {
             'action' : 'layer_edit',
-            'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+            'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
             'ubcar_layer_edit_id' : edit_id
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
@@ -240,11 +240,11 @@ function edit_layers_submit(thisthis) {
     var edit_id = jQuery( thisthis ).attr("id").replace('ubcar_layer_edit_submit_', '');
     var submit_data = {
         'action' : 'layer_edit_submit',
-        'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+        'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
         'ubcar_layer_edit_id' : edit_id,
-        'ubcar_layer_title': jQuery( "#ubcar_layer_edit_title_" + edit_id ).val(),
-        'ubcar_layer_description': jQuery( "#ubcar_layer_edit_description_" + edit_id ).val(),
-        'ubcar_layer_password': jQuery( "#ubcar_layer_edit_password_" + edit_id ).prop('checked')
+        'ubcar_layer_title': escape_html( jQuery( "#ubcar_layer_edit_title_" + edit_id ).val() ),
+        'ubcar_layer_description': escape_html( jQuery( "#ubcar_layer_edit_description_" + edit_id ).val() ),
+        'ubcar_layer_password': escape_html( jQuery( "#ubcar_layer_edit_password_" + edit_id ).prop('checked') )
     };
     jQuery.post(ajax_object.ajax_url, submit_data, function(response) {
         if( response == false ) {

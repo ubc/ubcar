@@ -19,9 +19,9 @@ function update_options() {
     var data = {
         'action': 'options_updater',
         'ubcar_css_choice': css_choice,
-        'ubcar_google_maps_api_key': jQuery( "#ubcar_google_maps_api_key" ).val(),
-        'ubcar_app_title': jQuery( "#ubcar_app_title" ).val(),
-        'ubcar_app_introduction': jQuery( "#ubcar_app_introduction" ).val()
+        'ubcar_google_maps_api_key': escape_html( jQuery( "#ubcar_google_maps_api_key" ).val() ),
+        'ubcar_app_title': escape_html( jQuery( "#ubcar_app_title" ).val() ),
+        'ubcar_app_introduction': escape_html( jQuery( "#ubcar_app_introduction" ).val() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         alert( response );

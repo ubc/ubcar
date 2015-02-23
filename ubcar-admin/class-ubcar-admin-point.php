@@ -57,7 +57,7 @@
             wp_enqueue_script( 'ubcar_map_display_google_script', 'https://maps.googleapis.com/maps/api/js?v=3.exp&key=' . get_option( 'ubcar_google_maps_api_key' ) );
             wp_register_script( 'ubcar_control_panel_point_updater_script', plugins_url( 'js/ubcar-point-updater.js', dirname(__FILE__) ) );
             wp_enqueue_script( 'ubcar_control_panel_script', array( 'jquery' ) );
-            wp_enqueue_script( 'ubcar_control_panel_point_updater_script', array( 'jquery' ) );
+            wp_enqueue_script( 'ubcar_control_panel_point_updater_script', array( 'jquery', 'ubcar_control_panel_script' ) );
             wp_localize_script( 'ubcar_control_panel_point_updater_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
             ?>
             <h2>UBCAR Point Page</h2>

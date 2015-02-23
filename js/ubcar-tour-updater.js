@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
     
     var data = {
         'action' : 'tour_initial',
-        'ubcar_tour_offset' : jQuery( "#ubcar_tour_display_count" ).val()
+        'ubcar_tour_offset' : escape_html( jQuery( "#ubcar_tour_display_count" ).val() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_tours(response);
@@ -46,20 +46,20 @@ jQuery(document).ready(function($) {
 function update_tours() {
     var tour_locations = [];
     jQuery( "#ubcar-tour-locations-selected-list li input" ).each(function() {
-        tour_locations.push( jQuery( this ).val() );
+        tour_locations.push( escape_html( jQuery( this ).val() ) );
     });
     var data = {
         'action': 'tour_updater',
-        'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
-        'ubcar_tour_title': jQuery( "#ubcar_tour_title" ).val(),
-        'ubcar_tour_description': jQuery( "#ubcar_tour_description" ).val(),
+        'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
+        'ubcar_tour_title': escape_html( jQuery( "#ubcar_tour_title" ).val() ),
+        'ubcar_tour_description': escape_html( jQuery( "#ubcar_tour_description" ).val() ),
         'ubcar_tour_locations': tour_locations
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         alert(response);
         data = {
             'action' : 'tour_initial',
-            'ubcar_tour_offset' : jQuery( "#ubcar_tour_display_count" ).val()
+            'ubcar_tour_offset' : escape_html( jQuery( "#ubcar_tour_display_count" ).val() )
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
             display_tours(response);
@@ -81,7 +81,7 @@ function update_tours() {
 function forward_tours() {
     var data = {
         'action' : 'tour_forward',
-        'ubcar_tour_offset' : jQuery( "#ubcar_tour_display_count" ).html()
+        'ubcar_tour_offset' : escape_html( jQuery( "#ubcar_tour_display_count" ).html() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_tours(response);
@@ -103,7 +103,7 @@ function forward_tours() {
 function backward_tours() {
     var data = {
         'action' : 'tour_backward',
-        'ubcar_tour_offset' : jQuery( "#ubcar_tour_display_count" ).html()
+        'ubcar_tour_offset' : escape_html( jQuery( "#ubcar_tour_display_count" ).html() )
     };
     jQuery.post(ajax_object.ajax_url, data, function(response) {
         display_tours(response);
@@ -126,7 +126,7 @@ function delete_tours( delete_id ) {
     if(confirm("Are you sure you want to delete this tour?")){
         var data = {
             'action' : 'tour_delete',
-            'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+            'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
             'ubcar_tour_delete_id' : delete_id
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
@@ -203,7 +203,7 @@ function display_tours( response ) {
 function edit_tours( edit_id ) {
         var data = {
             'action' : 'tour_edit',
-            'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+            'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
             'ubcar_tour_edit_id' : edit_id
         };
         jQuery.post(ajax_object.ajax_url, data, function(response) {
@@ -306,14 +306,14 @@ function edit_tours_submit(thisthis) {
     var edit_id = jQuery( thisthis ).attr("id").replace('ubcar_tour_edit_submit_', '');
     var tour_locations = [];
     jQuery( "#ubcar-tour-locations-selected-list-reorder-" + edit_id + " li input" ).each(function() {
-        tour_locations.push( jQuery( this ).val() );
+        tour_locations.push( escape_html( jQuery( this ).val() ) );
     });
     var submit_data = {
         'action' : 'tour_edit_submit',
-        'ubcar_nonce_field': jQuery( "#ubcar_nonce_field" ).val(),
+        'ubcar_nonce_field': escape_html( jQuery( "#ubcar_nonce_field" ).val() ),
         'ubcar_tour_edit_id' : edit_id,
-        'ubcar_tour_title': jQuery( "#ubcar_tour_edit_title_" + edit_id ).val(),
-        'ubcar_tour_description': jQuery( "#ubcar_tour_edit_description_" + edit_id ).val(),
+        'ubcar_tour_title': escape_html( jQuery( "#ubcar_tour_edit_title_" + edit_id ).val() ),
+        'ubcar_tour_description': escape_html( jQuery( "#ubcar_tour_edit_description_" + edit_id ).val() ),
         'ubcar_tour_locations': tour_locations
     };
     jQuery.post(ajax_object.ajax_url, submit_data, function(response) {
