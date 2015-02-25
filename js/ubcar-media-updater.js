@@ -380,7 +380,6 @@ function edit_medias_submit( thisthis, old_selected_layers, old_location ) {
         if( response == false ) {
             alert( "Sorry, you do not have permission to delete that media." );
         } else {
-            alert( response );
             var htmlString = '<td>';
             htmlString += response.ID;
             htmlString += '</td><td style="text-align: center">';

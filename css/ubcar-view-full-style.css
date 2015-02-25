@@ -1,67 +1,160 @@
 @media only screen and (min-width:750px) {
 
-    #ubcar-map-canvas, #ubcar-streetview-canvas {
-        width: 100%;
-        height: 100%;
-        border-radius: 5px;
-        z-index: 0;
-    }
-
     .ubcar-informational-left-column {
         width: 100%;
         height: 100%;
+        padding-right: 0px;
+        padding-bottom: 0px;
     }
-
+    
     .ubcar-content {
         height: 800px;
         position: relative;
     }
 
-    #ubcar-title-search {
+    #ubcar-map-canvas, #ubcar-streetview-canvas {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        border-color: #002145;
+        z-index: 0;
+    }
+    
+    .ubcar-accordion-header, .ubcar-header {
+        width: 80px;
+        height: 40px;
+        border: 1px solid white;
         position: absolute;
+    }
+    
+    #ubcar-accordion-header-layers {
+        left: 5px;
+        bottom: 85px;
+    }
+    
+    #ubcar-accordion-header-tours {
+        left: 90px;
+        bottom: 85px;
+    }
+    
+    #ubcar-title-search {
+        width: 250px;
+        left: 5px;
         bottom: 40px;
-        left: 10px;
-        width: 33%;
-        height: 44px;
-        overflow: scroll;
-        white-space: nowrap;
+        overflow: hidden;
+    }
+    
+    #ubcar-display-fullscreen {
+        display: block;
+        background: #002145;
     }
     
     #ubcar-search-input {
-        width: 100px;
-    }
-    
-     #ubcar-search-button {
         width: 150px;
-        overflow: hidden;
-     }
-
-    .ubcar-aggregate-container {
-        position: absolute;
+        height: 25px;
+        z-index: 222222;
+        vertical-align: middle;
+    }
+    
+    #ubcar-search-button {
+        width: 80px;
+        height: 27px;
+    }
+    
+    #ubcar-show-all {
+        left: 175px;
         bottom: 85px;
-        left: 10px;
-        width: 33%;
     }
     
-    .ubcar-display-choice {
-        position: absolute;
+    #ubcar-header-aggregate {
+        right: 10px;
+        bottom: 220px;
+        font-size: 12px;
+        padding: 0px;
+    }
+    
+    #ubcar-header-information {
+        right: 10px;
+        bottom: 175px;
+        font-size: 12px;
+        padding: 0px;
+    }
+    
+    #ubcar-header-media {
+        right: 10px;
+        bottom: 130px;
+        font-size: 12px;
+        padding: 0px;
+    }
+    
+    #ubcar-header-comments {
+        right: 10px;
+        bottom: 85px;
+        font-size: 12px;
+        padding: 0px;
+    }
+    
+    #ubcar-header-comments-submit {
+        right: 10px;
         bottom: 40px;
-        right: 10px;
-        width: 33%;
-        box-sizing: border-box;
+        font-size: 12px;
+        padding: 0px;
     }
     
-    .ubcar-informational-right-column {
-        position: absolute;
-        bottom: 76px;
+    #ubcar-display-fullscreen {
         right: 10px;
-        width: 33%;
-        max-height: 690px;
-        overflow: scroll;
-        box-sizing: border-box;
-        margin: 0px;
-        padding-left: 0px;
-        padding-bottom: 0px;
+        top: 80px;
+    }
+    
+    #ubcar-display-choice-map {
+        right: 10px;
+        top: 125px;
+    }
+
+    #ubcar-display-choice-street {
+        right: 10px;
+        top: 170px;
+    }
+
+    .ubcar-display-fullscreen-move {
+        top: 10px !important;
+    }
+
+    .ubcar-display-choice-map-move {
+        top: 55px !important;
+    }
+
+    .ubcar-display-choice-street-move {
+        top: 100px !important;
+    }
+
+    #ubcar-accordion-body-layers {
+        position: absolute;
+        left: 5px;
+        bottom: 130px;
+        width: 250px;
+        border-width: 1px 1px 1px 1px;
+        border-radius: 5px 5px 5px 5px;
+        background: white;
+    }
+    
+    #ubcar-accordion-body-tours {
+        position: absolute;
+        left: 5px;
+        bottom: 130px;
+        width: 250px;
+        border-width: 1px 1px 1px 1px;
+        border-radius: 5px 5px 5px 5px;
+        background: white;
+    }
+    
+    .ubcar-body {
+        position: absolute;
+        right: 95px;
+        bottom: 40px;
+        width: 40%;
+        border: 1px solid #002145;
+        border-radius: 5px;
     }
 
 }

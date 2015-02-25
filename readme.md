@@ -33,9 +33,19 @@ Use
 Future Expansions
 -----------------
 
-- [ ] Fix bug where switching from 'All' layers to 'All' tours initially removes all points from the map
 - [ ] Create JSON exporting tool for UBCAR points
-- [ ] Create better frontend formatting (automatic height adjustment and better overflow handling)
 - [ ] Create better backend formatting (no more variable width tables?)
 - [ ] Set different colors for KML layers on the map
-- [ ] Infobox pop-up on hover for UBCAR points on the map
+
+Change Log
+----------
+
+0.8.4 - Improved frontend UI, security fixes, added fullwindow option
+
+0.8.3 - Added Google Maps directions for UBCAR tours, added frontend buttons
+
+0.8.2 - Corrected bug introduced by additional XSS protection.
+
+0.8.1 - Added additional XSS protection.
+
+0.8.0 - Initial release.

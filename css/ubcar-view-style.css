@@ -48,7 +48,8 @@
 #ubcar-accordion-body-tours,
 #ubcar-streetview-canvas,
 .ubcar-wiki-body,
-.navbox-abovebelow {
+.navbox-abovebelow,
+#ubcar-display-fullscreen {
     display: none;
 }
 
@@ -91,7 +92,7 @@
 
 .ubcar-body {
     max-height: 500px;
-    overflow: scroll;
+    overflow: auto;
 }
 
 input[type="checkbox"] {
@@ -168,6 +169,13 @@ input[type="checkbox"] {
     display: inline-block;
     margin-top: 2px;
     margin-bottom: 0px;
+    height: 27px;
+}
+
+#ubcar-search-input {
+    display: inline-block;
+    margin-bottom: 0px;
+    height: 27px;
 }
 
 #ubcar-title-search {
@@ -254,10 +262,10 @@ ol.commentlist {
 
 .ubcar-accordion-body {
     max-height: 220px;
-    overflow: scroll;
+    overflow: auto;
 }
 
 #ubcar-navigation-information {
     max-height: 500px;
-    overflow: scroll;
+    overflow: auto;
 }

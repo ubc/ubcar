@@ -36,39 +36,60 @@ jQuery(document).ready(function() {
         }
     });
     
+    jQuery( "#ubcar-show-all" ).click(function() {
+        jQuery( "#ubcar-accordion-body-layers" ).hide();
+        jQuery( "#ubcar-accordion-body-tours" ).hide();
+        ubcar_layers_body_status = 'closed';
+        ubcar_tours_body_status = 'closed';
+    });
+    
     jQuery( "#ubcar-header-aggregate" ).click(function() {
         if( jQuery( "#ubcar-body-aggregate" ).html() != "" ) {
-            jQuery( "#ubcar-body-aggregate" ).slideToggle( "slow" );
+            jQuery( "#ubcar-body-comments-submit" ).hide();
+            jQuery( "#ubcar-body-media" ).hide();
+            jQuery( "#ubcar-body-information" ).hide();
+            jQuery( "#ubcar-body-comments" ).hide();
+            jQuery( "#ubcar-body-aggregate" ).toggle();
         }
     });
     
     jQuery( "#ubcar-header-information" ).click(function() {
         if( jQuery( "#ubcar-body-information" ).html() != "" ) {
-            jQuery( "#ubcar-body-information" ).slideToggle( "slow" );
+            jQuery( "#ubcar-body-comments-submit" ).hide();
+            jQuery( "#ubcar-body-media" ).hide();
+            jQuery( "#ubcar-body-comments" ).hide();
+            jQuery( "#ubcar-body-aggregate" ).hide();
+            jQuery( "#ubcar-body-information" ).toggle();
         }
     });
     
     jQuery( "#ubcar-header-media" ).click(function() {
         if( jQuery( "#ubcar-body-media" ).html() != "" ) {
-            jQuery( "#ubcar-body-media" ).slideToggle( "slow", function() {
-                jQuery(".ubcar-informational-right-column").animate( {scrollTop: jQuery(".ubcar-informational-right-column")[0].scrollHeight}, 500, 'swing' );
-            });
+            jQuery( "#ubcar-body-comments-submit" ).hide();
+            jQuery( "#ubcar-body-comments" ).hide();
+            jQuery( "#ubcar-body-information" ).hide();
+            jQuery( "#ubcar-body-aggregate" ).hide();
+            jQuery( "#ubcar-body-media" ).toggle();
         }
     });
     
     jQuery( "#ubcar-header-comments" ).click(function() {
         if( jQuery( "#ubcar-body-comments" ).html() != "" ) {
-            jQuery( "#ubcar-body-comments" ).slideToggle( "slow", function() {
-                jQuery(".ubcar-informational-right-column").animate( {scrollTop: jQuery(".ubcar-informational-right-column")[0].scrollHeight}, 500, 'swing' );
-            });
+            jQuery( "#ubcar-body-comments-submit" ).hide();
+            jQuery( "#ubcar-body-media" ).hide();
+            jQuery( "#ubcar-body-information" ).hide();
+            jQuery( "#ubcar-body-aggregate" ).hide();
+            jQuery( "#ubcar-body-comments" ).toggle();
         }
     });
     
     jQuery( "#ubcar-header-comments-submit" ).click(function() {
         if( jQuery( "#ubcar-body-comments-submit" ).html() != "" ) {
-            jQuery( "#ubcar-body-comments-submit" ).slideToggle( "slow", function() {
-                jQuery(".ubcar-informational-right-column").animate( {scrollTop: jQuery(".ubcar-informational-right-column")[0].scrollHeight}, 500, 'swing' );
-            });
+            jQuery( "#ubcar-body-comments" ).hide();
+            jQuery( "#ubcar-body-media" ).hide();
+            jQuery( "#ubcar-body-information" ).hide();
+            jQuery( "#ubcar-body-aggregate" ).hide();
+            jQuery( "#ubcar-body-comments-submit" ).toggle();
         }
     });
     
