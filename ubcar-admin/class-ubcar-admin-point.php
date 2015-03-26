@@ -133,16 +133,16 @@
                 echo 'Sorry, WordPress has rejected your submission - specifically, your nonce did not verify. Please reload the form page and try again. This message may occur if you took more than a day to complete your form, if you do not have the appropriate privileges to submit data points but nonetheless try, or if the ubcar coding team made an error.';
             } else {
                 $ubcar_point_post = array(
-                    'post_title' => $_POST['ubcar_point_title'],
-                    'post_content' => $_POST['ubcar_point_description'],
+                    'post_title' => sanitize_text_field( $_POST['ubcar_point_title'] ),
+                    'post_content' => sanitize_text_field( $_POST['ubcar_point_description'] ),
                     'post_status' => 'publish',
                     'post_type' => 'ubcar_point'
                 );
                 
                 $ubcar_point_id = wp_insert_post( $ubcar_point_post );
-                add_post_meta( $ubcar_point_id, 'ubcar_point_latitude', $_POST['ubcar_point_latitude'] );
-                add_post_meta( $ubcar_point_id, 'ubcar_point_longitude', $_POST['ubcar_point_longitude'] );
-                add_post_meta( $ubcar_point_id, 'ubcar_point_tags', $_POST['ubcar_point_tags'] );
+                add_post_meta( $ubcar_point_id, 'ubcar_point_latitude', sanitize_text_field( $_POST['ubcar_point_latitude'] ) );
+                add_post_meta( $ubcar_point_id, 'ubcar_point_longitude', sanitize_text_field( $_POST['ubcar_point_longitude'] ) );
+                add_post_meta( $ubcar_point_id, 'ubcar_point_tags', sanitize_text_field( $_POST['ubcar_point_tags'] ) );
                 add_post_meta( $ubcar_point_id, 'ubcar_point_media', array() );
                 echo 'Submission uploaded!';
             }
@@ -300,9 +300,9 @@
                     echo 0;
                 } else {
                     $update_array = array(
-                        'ID' => $_POST['ubcar_point_edit_id'],
-                        'post_title' => $_POST['ubcar_point_title'],
-                        'post_content' => $_POST['ubcar_point_description']
+                        'ID' => sanitize_text_field( $_POST['ubcar_point_edit_id'] ),
+                        'post_title' => sanitize_text_field( $_POST['ubcar_point_title'] ),
+                        'post_content' => sanitize_text_field( $_POST['ubcar_point_description'] )
                     );
                     wp_update_post( $update_array );
                     update_post_meta( $_POST['ubcar_point_edit_id'], 'ubcar_point_latitude', $_POST['ubcar_point_latitude']  );

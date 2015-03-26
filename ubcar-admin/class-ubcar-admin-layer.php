@@ -118,14 +118,14 @@
                 echo 'Sorry, WordPress has rejected your submission - specifically, your nonce did not verify. Please reload the form page and try again. This message may occur if you took more than a day to complete your form, if you do not have the appropriate privileges to submit data points but nonetheless try, or if the ubcar coding team made an error.';
             } else {
                 $ubcar_layer_post = array(
-                    'post_title' => $_POST['ubcar_layer_title'],
-                    'post_content' => $_POST['ubcar_layer_description'],
+                    'post_title' => sanitize_text_field( $_POST['ubcar_layer_title'] ),
+                    'post_content' => sanitize_text_field( $_POST['ubcar_layer_description'] ),
                     'post_status' => 'publish',
                     'post_type' => 'ubcar_layer'
                 );
                 
                 $ubcar_layer_id = wp_insert_post( $ubcar_layer_post );
-                add_post_meta( $ubcar_layer_id, 'ubcar_password', $_POST['ubcar_layer_password'] );
+                add_post_meta( $ubcar_layer_id, 'ubcar_password', sanitize_text_field( $_POST['ubcar_layer_password'] ) );
                 add_post_meta( $ubcar_layer_id, 'ubcar_layer_media', array() );
                 add_post_meta( $ubcar_layer_id, 'ubcar_layer_points', array() );
                 echo 'Submission uploaded!';
@@ -211,7 +211,7 @@
          * @return void
          */
         function ubcar_layer_backward() {
-            $back_layer = ($_POST['ubcar_layer_offset'] - 2 ) * 10;
+            $back_layer = ( sanitize_text_field( $_POST['ubcar_layer_offset'] ) - 2 ) * 10;
             if( $back_layer < 0 ) {
                 $back_layer = 0;
             }
@@ -228,14 +228,14 @@
          */
         function ubcar_layer_delete() {
             global $wpdb;
-            $delete_post = get_post( $_POST['ubcar_layer_delete_id'] );
+            $delete_post = get_post( sanitize_text_field( $_POST['ubcar_layer_delete_id'] ) );
             if ( !isset($_POST['ubcar_nonce_field']) || !wp_verify_nonce($_POST['ubcar_nonce_field'],'ubcar_nonce_check')  ) {
                 echo 0;
             } else {
                 if( get_current_user_id() != $delete_post->post_author && !current_user_can( 'edit_pages' )) {
                     echo 0;
                 } else {
-                    wp_delete_post( $_POST['ubcar_layer_delete_id'] );
+                    wp_delete_post( sanitize_text_field( $_POST['ubcar_layer_delete_id'] ) );
                     $this->ubcar_layer_get_layers( 0 );
                 }
             }
@@ -251,7 +251,7 @@
          */
         function ubcar_layer_edit() {
             global $wpdb;
-            $edit_post = get_post( $_POST['ubcar_layer_edit_id'] );
+            $edit_post = get_post( sanitize_text_field( $_POST['ubcar_layer_edit_id'] ) );
             if ( !isset($_POST['ubcar_nonce_field']) || !wp_verify_nonce($_POST['ubcar_nonce_field'],'ubcar_nonce_check')  ) {
                 echo 0;
             } else {
@@ -273,7 +273,7 @@
          */
         function ubcar_layer_edit_submit() {
             global $wpdb;
-            $edit_post = get_post( $_POST['ubcar_layer_edit_id'] );
+            $edit_post = get_post( sanitize_text_field( $_POST['ubcar_layer_edit_id'] ) );
             if ( !isset($_POST['ubcar_nonce_field']) || !wp_verify_nonce($_POST['ubcar_nonce_field'],'ubcar_nonce_check')  ) {
                 echo 0;
             } else {
@@ -281,13 +281,13 @@
                     echo 0;
                 } else {
                     $update_array = array(
-                        'ID' => $_POST['ubcar_layer_edit_id'],
-                        'post_title' => $_POST['ubcar_layer_title'],
-                        'post_content' => $_POST['ubcar_layer_description']
+                        'ID' => sanitize_text_field( $_POST['ubcar_layer_edit_id'] ),
+                        'post_title' => sanitize_text_field( $_POST['ubcar_layer_title'] ),
+                        'post_content' => sanitize_text_field( $_POST['ubcar_layer_description'] )
                     );
                     wp_update_post( $update_array );
-                    update_post_meta( $_POST['ubcar_layer_edit_id'], 'ubcar_password', $_POST['ubcar_layer_password']  );
-                    echo wp_send_json( $this->ubcar_get_layer( $_POST['ubcar_layer_edit_id'] ) );
+                    update_post_meta( sanitize_text_field( $_POST['ubcar_layer_edit_id'] ), 'ubcar_password', sanitize_text_field( $_POST['ubcar_layer_password'] ) );
+                    echo wp_send_json( $this->ubcar_get_layer( sanitize_text_field( $_POST['ubcar_layer_edit_id'] ) ) );
                 }
             }
         }

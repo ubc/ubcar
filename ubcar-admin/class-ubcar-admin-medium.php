@@ -285,16 +285,16 @@
                             exit;
                         }
                     } else if( $_POST['ubcar_media_type'] == 'audio' ) {
-                        $ubcar_url = $_POST['ubcar_audio_url'];
-                        $ubcar_media_post_meta['audio_type'] = $_POST['ubcar_audio_type'];
+                        $ubcar_url = $this->ubcar_media_data_cleaner( $_POST['ubcar_audio_url'] );
+                        $ubcar_media_post_meta['audio_type'] = $this->ubcar_media_data_cleaner( $_POST['ubcar_audio_type'] );
                     } else if( $_POST['ubcar_media_type'] == 'video' ) {
-                        $ubcar_url = substr( $_POST['ubcar_video_url'], strrpos( $_POST['ubcar_video_url'], "=" )  );
-                        $ubcar_media_post_meta['video_type'] = $_POST['ubcar_video_type'];
+                        $ubcar_url = $this->ubcar_media_data_cleaner(  substr( $_POST['ubcar_video_url'], strrpos( $_POST['ubcar_video_url'], "=" ) ) );
+                        $ubcar_media_post_meta['video_type'] = $this->ubcar_media_data_cleaner(  $_POST['ubcar_video_type'] );
                     } else if( $_POST['ubcar_media_type'] == 'external' || $_POST['ubcar_media_type'] == 'wiki' ) {
                         if( $_POST['ubcar_media_type'] == 'external' ) {
-                            $ubcar_url_string = $_POST['ubcar_external_url'];
+                            $ubcar_url_string = $this->ubcar_media_data_cleaner( $_POST['ubcar_external_url'] );
                         } else if( $_POST['ubcar_media_type'] == 'wiki' ) {
-                            $ubcar_url_string = $_POST['ubcar_wiki_url'];
+                            $ubcar_url_string = $this->ubcar_media_data_cleaner( $_POST['ubcar_wiki_url'] );
                             $ubcar_media_post['post_content'] = 'n/a';
                         }
                         $ubcar_url_array = parse_url( $ubcar_url_string );
@@ -304,9 +304,9 @@
                             $ubcar_url .= 'http://' . $ubcar_url_string;
                         }
                     } else if( $_POST['ubcar_media_type'] == 'imagewp' ) {
-                        $ubcar_url = $_POST['ubcar_wp_image_url']; 
+                        $ubcar_url = $this->ubcar_media_data_cleaner( $_POST['ubcar_wp_image_url']);
                     }
-                    $ubcar_media_post_meta['type'] = $_POST['ubcar_media_type'];
+                    $ubcar_media_post_meta['type'] = $this->ubcar_media_data_cleaner( $_POST['ubcar_media_type'] );
                     if( $_POST['ubcar_media_type'] == 'imagewp' ) {
                         $ubcar_media_post_meta['type'] = 'image';
                     }
@@ -329,12 +329,12 @@
                             $layer_media = array();
                         }
                         array_push( $layer_media, $ubcar_media_id );
-                        update_post_meta( $layer, 'ubcar_layer_media',  $layer_media );
+                        update_post_meta( $layer, 'ubcar_layer_media',  $this->ubcar_media_data_cleaner( $layer_media ) );
                         $layer_points = get_post_meta( $layer, 'ubcar_layer_points', true );
                         if( $layer_points == null ) {
                             $layer_points = array();
                         }
-                        array_push( $layer_points, array( $ubcar_media_id, $_POST['ubcar_media_location'] ) );
+                        array_push( $layer_points, array( $ubcar_media_id, $this->ubcar_media_data_cleaner( $_POST['ubcar_media_location'] ) ) );
                         update_post_meta( $layer, 'ubcar_layer_points',  $layer_points );
                     }
                     $ubcar_location_media = get_post_meta( $_POST['ubcar_media_location'], 'ubcar_point_media', true );
@@ -342,7 +342,7 @@
                         $ubcar_location_media = array();
                     }
                     array_push( $ubcar_location_media, $ubcar_media_id );
-                    update_post_meta( $_POST['ubcar_media_location'], 'ubcar_point_media', $ubcar_location_media );
+                    update_post_meta( $this->ubcar_media_data_cleaner( $_POST['ubcar_media_location'] ), 'ubcar_point_media', $ubcar_location_media );
                     
                 }
                 $return_url = plugins_url( 'ubcar-data/ubcar-post-redirect-get.php', dirname(__FILE__) ) . '?return=' . menu_page_url( 'ubcar-media', 0 );
@@ -607,20 +607,20 @@
                     echo 0;
                 } else {
                     $update_array = array(
-                        'ID' => $_POST['ubcar_media_edit_id'],
-                        'post_title' => $_POST['ubcar_media_title'],
-                        'post_content' => $_POST['ubcar_media_description']
+                        'ID' => $this->ubcar_media_data_cleaner( $_POST['ubcar_media_edit_id'] ),
+                        'post_title' => $this->ubcar_media_data_cleaner( $_POST['ubcar_media_title'] ),
+                        'post_content' => $this->ubcar_media_data_cleaner( $_POST['ubcar_media_description'] )
                     );
                     $update_array_meta = get_post_meta( $_POST['ubcar_media_edit_id'], 'ubcar_media_meta', true );
-                    $update_array_meta['location'] = $_POST['ubcar_media_location'];
-                    $update_array_meta['layers'] = explode( ',', $_POST['ubcar_media_layers'] );
+                    $update_array_meta['location'] = $this->ubcar_media_data_cleaner( $_POST['ubcar_media_location'] );
+                    $update_array_meta['layers'] = explode( ',', $this->ubcar_media_data_cleaner( $_POST['ubcar_media_layers'] ) );
                     if( $_POST['ubcar_media_hidden'] == 'true' ) {
                         $update_array_meta['hidden'] = 'on';
                     } else {
                         $update_array_meta['hidden'] = 'off';
                     }
                     wp_update_post( $update_array );
-                    update_post_meta( $_POST['ubcar_media_edit_id'], 'ubcar_media_meta',  $update_array_meta  );
+                    update_post_meta( $this->ubcar_media_data_cleaner( $_POST['ubcar_media_edit_id'] ), 'ubcar_media_meta',  $update_array_meta  );
                     
                     // check if layers have been added; update ubcar_layer_media and ubcar_layer_points metadata
                     if( isset ( $_POST['ubcar_media_added_layers'] ) ) {
@@ -630,13 +630,13 @@
                                 if( $layer_media == null ) {
                                     $layer_media = array();
                                 }
-                                array_push( $layer_media, $_POST['ubcar_media_edit_id'] );
+                                array_push( $layer_media, $this->ubcar_media_data_cleaner( $_POST['ubcar_media_edit_id'] ) );
                                 update_post_meta( $layer, 'ubcar_layer_media',  $layer_media );
                                 $layer_points = get_post_meta( $layer, 'ubcar_layer_points', true );
                                 if( $layer_points == null ) {
                                     $layer_points = array();
                                 }
-                                array_push( $layer_points, array( $_POST['ubcar_media_edit_id'], $_POST['ubcar_media_location'] ) );
+                                array_push( $layer_points, array( $this->ubcar_media_data_cleaner(  $_POST['ubcar_media_edit_id'] ), $this->ubcar_media_data_cleaner(  $_POST['ubcar_media_location'] ) ) );
                                 update_post_meta( $layer, 'ubcar_layer_points',  $layer_points );
                             }
                         }
@@ -675,8 +675,8 @@
                         if( $location_media == null ) {
                             $location_media = array();
                         }
-                        array_push( $location_media, $_POST['ubcar_media_edit_id'] );
-                        update_post_meta( $_POST['ubcar_media_location'], 'ubcar_point_media',  $location_media );
+                        array_push( $location_media, $this->ubcar_media_data_cleaner( $_POST['ubcar_media_edit_id'] ) );
+                        update_post_meta( $this->ubcar_media_data_cleaner( $_POST['ubcar_media_location'] ), 'ubcar_point_media',  $location_media );
                         $old_location_media = get_post_meta( $_POST['ubcar_media_old_location'], 'ubcar_point_media', true );
                         if( $old_location_media != null ) {
                             $old_location_media_index = array_search( $_POST['ubcar_media_edit_id'], $old_location_media );

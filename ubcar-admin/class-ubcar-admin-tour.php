@@ -10,7 +10,7 @@
      *     with this tour. Their order determines the order of the tour.
      * 
      * @package UBCAR
-     */    
+     */
 
     /*
      * The UBCAR_Admin_Tour subclass
@@ -133,8 +133,8 @@
                 echo 'Sorry, WordPress has rejected your submission - specifically, your nonce did not verify. Please reload the form page and try again. This message may occur if you took more than a day to complete your form, if you do not have the appropriate privileges to submit data points but nonetheless try, or if the ubcar coding team made an error.';
             } else {
                 $ubcar_tour_post = array(
-                    'post_title' => $_POST['ubcar_tour_title'],
-                    'post_content' => $_POST['ubcar_tour_description'],
+                    'post_title' => sanitize_text_field( $_POST['ubcar_tour_title'] ),
+                    'post_content' => sanitize_text_field( $_POST['ubcar_tour_description'] ),
                     'post_status' => 'publish',
                     'post_type' => 'ubcar_tour'
                 );
@@ -318,9 +318,9 @@
                     echo 0;
                 } else {
                     $update_array = array(
-                        'ID' => $_POST['ubcar_tour_edit_id'],
-                        'post_title' => $_POST['ubcar_tour_title'],
-                        'post_content' => $_POST['ubcar_tour_description']
+                        'ID' => sanitize_text_field( $_POST['ubcar_tour_edit_id'] ),
+                        'post_title' => sanitize_text_field( $_POST['ubcar_tour_title'] ),
+                        'post_content' => sanitize_text_field( $_POST['ubcar_tour_description'] )
                     );
                     wp_update_post( $update_array );
                     if( isset( $_POST['ubcar_tour_locations'] ) ) {
