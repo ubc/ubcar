@@ -40,6 +40,8 @@ Future Expansions
 Change Log
 ----------
 
+0.9.0 - Brought up to WordPress coding standards
+
 0.8.4 - Improved frontend UI, security fixes, added fullwindow option
 
 0.8.3 - Added Google Maps directions for UBCAR tours, added frontend buttons
