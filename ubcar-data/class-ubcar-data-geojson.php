@@ -1,9 +1,9 @@
 <?php
 	/**
-	 * The UBCAR_Data_KML subclass
+	 * The UBCAR_DATA_GeoJSON subclass
 	 * 
-	 * This file defines the UBCAR_Data_KML subclass. The UBCAR_Data_KML
-	 * class produces KML-formatted ubcar_point data upon GET request. It
+	 * This file defines the UBCAR_DATA_GeoJSON subclass. The UBCAR_DATA_GeoJSON
+	 * class produces GeoJSON-formatted ubcar_point data upon GET request. It
 	 * accepts the following fields:
 	 * 
 	 * - ubcar_layers[]: ubcar_layer IDs
@@ -17,12 +17,12 @@
 	 */
 
 	/*
-	 * The UBCAR_Data_KML subclass
+	 * The UBCAR_DATA_GeoJSON subclass
 	 */
-	class UBCAR_Data_KML extends UBCAR_Data {
+	class UBCAR_Data_GeoJSON extends UBCAR_Data {
 	
 		/**
-		 * The UBCAR_Data_KML constructor.
+		 * The UBCAR_DATA_GeoJSON constructor.
 		 * 
 		 * @access public
 		 * @return void
@@ -32,7 +32,7 @@
 		}
 		
 		/**
-		 * This function adds the UBCAR_Data_KML actions and filters.
+		 * This function adds the UBCAR_DATA_GeoJSON actions and filters.
 		 * 
 		 * @access public
 		 * @return void
@@ -52,7 +52,7 @@
 		 * @return array
 		 */
 		function query_vars( $query_vars ) {
-			$query_vars[] = 'ubcar_download_kml';
+			$query_vars[] = 'ubcar_download_geojson';
 			return $query_vars;
 		}
 
@@ -66,32 +66,32 @@
 		 * @return void
 		 */
 		function parse_request( $wp ) {
-			if( array_key_exists( 'ubcar_download_kml', $wp->query_vars ) ) {
-				$this->ubcar_download_kml();
+			if( array_key_exists( 'ubcar_download_geojson', $wp->query_vars ) ) {
+				$this->ubcar_download_geojson();
 				exit;
 			}
 		}
 
 		/**
-		 * This function assembles and echoes the KML file.
+		 * This function assembles and echoes the GeoJSON file.
 		 * 
 		 * @access public
 		 * @return void
 		 */
-		function ubcar_download_kml() {
-			$this->ubcar_download_kml_headers();
-			$this->ubcar_download_kml_body();
+		function ubcar_download_geojson() {
+			$this->ubcar_download_geojson_headers();
+			$this->ubcar_download_geojson_body();
 			exit;
 		}
 		
 		/**
-		 * This is the helper function for assembling a KML file's headers,
+		 * This is the helper function for assembling a GeoJSON file's headers,
 		 * assigning a random suffix to the filename to preclude Google caching.
 		 * 
 		 * @access public
 		 * @return void
 		 */
-		function ubcar_download_kml_headers() {
+		function ubcar_download_geojson_headers() {
 			header( "Pragma: public" );
 			header( "Expires: 0" );
 			header( "Cache-Control: must-revalidate, post-check=0, pre-check=0" );
@@ -103,12 +103,12 @@
 		}
 		
 		/**
-		 * This is the helper function for assembling a KML file's body.
+		 * This is the helper function for assembling a GeoJSON file's body.
 		 * 
 		 * @access public
 		 * @return void
 		 */
-		function ubcar_download_kml_body() {
+		function ubcar_download_geojson_body() {
 			echo '<?xml version="1.0" encoding="utf-8"?>';
 			echo "\n";
 			echo '<kml xmlns="http://www.opengis.net/kml/2.2">';
@@ -122,7 +122,7 @@
 		}
 
 		/**
-		 * This is the helper function for assembling the KML file's individual
+		 * This is the helper function for assembling the GeoJSON file's individual
 		 * points.
 		 * 
 		 * @access public
@@ -152,7 +152,7 @@
 
 		/**
 		 * This is the helper function for retrieving ubcar_point data for the
-		 * KML file, including a custom SQL query for tag searching.
+		 * GeoJSON file, including a custom SQL query for tag searching.
 		 * 
 		 * @access public
 		 * @return array

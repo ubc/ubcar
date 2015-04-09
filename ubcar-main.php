@@ -24,20 +24,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-    
-    if ( ! defined( 'ABSPATH' ) ) {
-        exit;
-    }
-    
-    /**
-     * Requires the UBCAR_Admin, UBCAR_View, and UBCAR_Data superclasses.
-     */
-    require_once( plugin_dir_path(__FILE__).'ubcar-admin/class-ubcar-admin.php' );
-    require_once( plugin_dir_path(__FILE__).'ubcar-view/class-ubcar-view.php' );
-    require_once( plugin_dir_path(__FILE__).'ubcar-data/class-ubcar-data.php' );
-    
-    new UBCAR_Admin();
-    new UBCAR_View();
-    new UBCAR_Data();
-    
+	
+	if ( ! defined( 'ABSPATH' ) ) {
+		exit;
+	}
+	
+	/**
+	 * Requires the UBCAR_Admin, UBCAR_View, and UBCAR_Data superclasses.
+	 */
+	require_once( plugin_dir_path( __FILE__ ).'ubcar-admin/class-ubcar-admin.php' );
+	require_once( plugin_dir_path( __FILE__ ).'ubcar-view/class-ubcar-view.php' );
+	require_once( plugin_dir_path( __FILE__ ).'ubcar-data/class-ubcar-data.php' );
+	
+	new UBCAR_Admin();
+	new UBCAR_View();
+	new UBCAR_Data();
+	
 ?>

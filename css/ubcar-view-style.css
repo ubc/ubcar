@@ -1,42 +1,27 @@
-.ubcar-informational-left-column, .ubcar-informational-right-column {
-    width: 50%;
-    float: left;
-    box-sizing: border-box;
-    padding-bottom: 10px;
+.ubcar-informational-left-column,
+.ubcar-informational-right-column {
+	width: 50%;
+	float: left;
+	box-sizing: border-box;
+	padding-bottom: 10px;
 }
 
 .ubcar-informational-left-column {
-    padding-right: 5px;
+	padding-right: 5px;
 }
 
 .ubcar-informational-right-column {
-    padding-left: 5px;
-}
-
-@media only screen and (max-width:750px) {
-    .ubcar-informational-left-column, .ubcar-informational-right-column {
-        width: 100%;
-        box-sizing: border-box;
-        padding-bottom: 5px;
-    }
-
-    .ubcar-informational-left-column {
-        padding-right: 0px;
-    }
-
-    .ubcar-informational-right-column {
-        padding-left: 0px;
-    }
+	padding-left: 5px;
 }
 
 #ubcar-map-canvas, #ubcar-streetview-canvas {
-    width: 100%;
-    height: 500px;
-    border-radius: 5px;
+	width: 100%;
+	height: 500px;
+	border-radius: 5px;
 }
 
 #ubcar-map-canvas img, #ubcar-streetview-canvas img {
-    max-width: none;
+	max-width: none;
 }
 
 #ubcar-body-information,
@@ -50,222 +35,245 @@
 .ubcar-wiki-body,
 .navbox-abovebelow,
 #ubcar-display-fullscreen {
-    display: none;
+	display: none;
 }
 
 .ubcar-wiki-header {
-    display: block;
-    border: 1px solid #002145;
-    background: #335478;
-    padding: 2px;
-    margin-bottom: 5px;
-    width: 100%;
-    box-sizing: border-box;
-    color: white;
-    cursor: pointer;
-    border-radius: 3px;
+	display: block;
+	border: 1px solid #002145;
+	background: #335478;
+	padding: 2px;
+	margin-bottom: 5px;
+	width: 100%;
+	box-sizing: border-box;
+	color: white;
+	cursor: pointer;
+	border-radius: 3px;
 }
 
 .ubcar-wiki-body {
-    box-sizing: border-box;
-    padding: 0px 10px 10px 10px;
-    border: 1px solid #002145;
-    border-width: 0px 1px 1px 1px;
-    margin-top: -10px;
-    border-radius: 0px 0px 3px 3px;
-    position: relative;
-    z-index: 1;
+	box-sizing: border-box;
+	padding: 0px 10px 10px 10px;
+	border: 1px solid #002145;
+	border-width: 0px 1px 1px 1px;
+	margin-top: -10px;
+	border-radius: 0px 0px 3px 3px;
+	position: relative;
+	z-index: 1;
 }
 
 .ubcar-caption-title {
-    margin-top: 5px;
-    text-align: center;
+	margin-top: 5px;
+	text-align: center;
 }
 
 .ubcar-caption-main {
-    text-align: left;
+	text-align: left;
 }
 
 .ubcar-caption-main .ubcar-uploader, .ubcar-meta {
-    color: grey;
+	color: grey;
 }
 
 .ubcar-body {
-    max-height: 500px;
-    overflow: auto;
+	max-height: 500px;
+	overflow: auto;
 }
 
 input[type="checkbox"] {
-    vertical-align: middle;
-    margin-top: 0px;
+	vertical-align: middle;
+	margin-top: 0px;
 }
 
 .ubcar-delay {
-    width: 100%;
-    min-height: 100px;
-    height: 100%;
-    background-image: url("wikimedia-spinner.gif");
-    background-repeat: no-repeat;
-    background-position: center;
-    margin-top: -10px;
+	width: 100%;
+	min-height: 100px;
+	height: 100%;
+	background-image: url("wikimedia-spinner.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+	margin-top: -10px;
 }
 
-.ubcar-body, .ubcar-accordion-body {
-    padding: 20px 20px 10px 20px;
-    border: 1px solid #002145;
-    border-width: 0px 1px 1px 1px;
-    box-sizing: border-box;
-    margin-top: -10px;
-    border-radius: 0px 0px 5px 5px;
-    position: relative;
-    z-index: 1;
-    background: white;
+.ubcar-body,
+.ubcar-accordion-body {
+	padding: 20px 20px 10px 20px;
+	border: 1px solid #002145;
+	border-width: 0px 1px 1px 1px;
+	box-sizing: border-box;
+	margin-top: -10px;
+	border-radius: 0px 0px 5px 5px;
+	position: relative;
+	z-index: 1;
+	background: white;
 }
 
 .ubcar-body > textarea, .ubcar-reply-area > textarea {
-    width: 100%;
-    box-sizing: border-box;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .ubcar-button {
-    background: #2ea2cc;
-    -webkit-box-shadow: inset 0 1px 0 rgba(120, 200, 230, .5), 0 1px 0 rgba(0, 0, 0, .15);
-    box-shadow: inset 0 1px 0 rgba(120, 200, 230, .5), 0 1px 0 rgba(0, 0, 0, .15);
-    color: #fff;
-    text-decoration: none;
-    font-size: 13px;
-    line-height: 26px;
-    height: 28px;
-    margin: 0;
-    margin-bottom: 10px;
-    padding: 0 10px 1px;
-    cursor: pointer;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 3px;
-    border-color: #0074a2;
-    white-space: nowrap;
-    box-sizing: border-box;
-    text-align: center;
+	background: #2ea2cc;
+	-webkit-box-shadow: inset 0 1px 0 rgba(120, 200, 230, .5), 0 1px 0 rgba(0, 0, 0, .15);
+	box-shadow: inset 0 1px 0 rgba(120, 200, 230, .5), 0 1px 0 rgba(0, 0, 0, .15);
+	color: #fff;
+	text-decoration: none;
+	font-size: 13px;
+	line-height: 26px;
+	height: 28px;
+	margin: 0;
+	margin-bottom: 10px;
+	padding: 0 10px 1px;
+	cursor: pointer;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 3px;
+	border-color: #0074a2;
+	white-space: nowrap;
+	box-sizing: border-box;
+	text-align: center;
 }
 
-.ubcar-button:focus, .ubcar-button:hover {
-    background: #1e8cbe;
-    border-color: #0074a2;
-    -webkit-box-shadow: inset 0 1px 0 rgba(120, 200, 230, .6);
-    box-shadow: inset 0 1px 0 rgba(120, 200, 230, .6);
-    color: #fff;
+.ubcar-button:focus,
+.ubcar-button:hover {
+	background: #1e8cbe;
+	border-color: #0074a2;
+	-webkit-box-shadow: inset 0 1px 0 rgba(120, 200, 230, .6);
+	box-shadow: inset 0 1px 0 rgba(120, 200, 230, .6);
+	color: #fff;
 }
 
 .ubcar-button:active {
-    background: #002145;
-    border-color: #005684;
-    color: rgba(255, 255, 255, .95);
-    -webkit-box-shadow: inset 0 1px 0 rgba(0, 0, 0, .1);
-    box-shadow: inset 0 1px 0 rgba(0, 0, 0, .1);
+	background: #002145;
+	border-color: #005684;
+	color: rgba(255, 255, 255, .95);
+	-webkit-box-shadow: inset 0 1px 0 rgba(0, 0, 0, .1);
+	box-shadow: inset 0 1px 0 rgba(0, 0, 0, .1);
 }
 
 #ubcar-search-button {
-    display: inline-block;
-    margin-top: 2px;
-    margin-bottom: 0px;
-    height: 27px;
+	display: inline-block;
+	margin-top: 2px;
+	margin-bottom: 0px;
+	height: 27px;
 }
 
 #ubcar-search-input {
-    display: inline-block;
-    margin-bottom: 0px;
-    height: 27px;
+	display: inline-block;
+	margin-bottom: 0px;
+	height: 27px;
 }
 
 #ubcar-title-search {
-    cursor: default;
+	cursor: default;
 }
 
 ol.commentlist {
-    padding: 0px;
+	padding: 0px;
 }
 
 .comment {
-    padding-left: 5%;
-    box-sizing: border-box;
-    border-left: 1px solid #DDDDDD;
-    border-top: 1px solid #EEEEEE;
+	padding-left: 5%;
+	box-sizing: border-box;
+	border-left: 1px solid #DDDDDD;
+	border-top: 1px solid #EEEEEE;
 }
 
 .ubcar-comment-reply {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .ubcar-comment-header {
-    font-size: 12px;
-    color: grey;
-    display: inline;
+	font-size: 12px;
+	color: grey;
+	display: inline;
 }
 
 .ubcar-body p {
-    margin-bottom: 5px;
-    margin-top: 0px;
-    line-height: 20px;
+	margin-bottom: 5px;
+	margin-top: 0px;
+	line-height: 20px;
 }
 
-#ubcar-body-comments, #ubcar-body-aggregate {
-    max-height: 220px;
+#ubcar-body-comments,
+#ubcar-body-aggregate {
+	max-height: 220px;
 }
 
 #ubcar-body-aggregate > div ol li {
-    cursor: pointer;
+	cursor: pointer;
 }
 
-.ubcar-body img, .ubcar-body iframe {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
+.ubcar-body img,
+.ubcar-body iframe {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
 }
 
-.ubcar-accordion-header, .ubcar-header {
-    min-height: 30px;
-    width: 100%;
-    background: #002145;
-    border-radius: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-top: 1px;
-    text-align: center;
-    color: white;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 2;
-    cursor: default;
-    cursor: pointer;
+.ubcar-accordion-header,
+.ubcar-header {
+	min-height: 30px;
+	width: 100%;
+	background: #002145;
+	border-radius: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-top: 1px;
+	text-align: center;
+	color: white;
+	box-sizing: border-box;
+	position: relative;
+	z-index: 2;
+	cursor: default;
+	cursor: pointer;
+	line-height: 18px;
 }
 
 .ubcar-half {
-    width: 49.5%;
-    box-sizing: border-box;
-    display: block;
-    float: left;
+	width: 49.5%;
+	box-sizing: border-box;
+	display: block;
+	float: left;
 }
 
 .ubcar-half-buffer {
-    display: block;
-    min-width: 1%;
-    height: 1px;
-    float: left;
+	display: block;
+	min-width: 1%;
+	height: 1px;
+	float: left;
 }
 
 .ubcar-display-choice {
-    display: block;
-    min-height: 36px;
+	display: block;
+	min-height: 36px;
 }
 
 .ubcar-accordion-body {
-    max-height: 220px;
-    overflow: auto;
+	max-height: 220px;
+	overflow: auto;
 }
 
 #ubcar-navigation-information {
-    max-height: 500px;
-    overflow: auto;
+	max-height: 500px;
+	overflow: auto;
+}
+
+@media only screen and (max-width:750px) {
+	.ubcar-informational-left-column,
+	.ubcar-informational-right-column {
+		width: 100%;
+		box-sizing: border-box;
+		padding-bottom: 5px;
+	}
+
+	.ubcar-informational-left-column {
+		padding-right: 0px;
+	}
+
+	.ubcar-informational-right-column {
+		padding-left: 0px;
+	}
 }
