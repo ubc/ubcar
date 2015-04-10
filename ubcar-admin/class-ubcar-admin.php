@@ -86,7 +86,7 @@
 		 */
 		function menu_init() {
 			wp_register_script( 'ubcar_control_panel_script', plugins_url( 'js/ubcar-control-panel.js', dirname( __FILE__ ) ) );
-			wp_register_style( 'ubcar_control_panel_style', plugins_url().'/ubcar/css/ubcar-admin-style.css' );
+			wp_register_style( 'ubcar_control_panel_style', plugins_url( '/css/ubcar-admin-style.css', dirname( __FILE__ ) ) );
 			wp_enqueue_style( 'ubcar_control_panel_style' );
 		}
 		

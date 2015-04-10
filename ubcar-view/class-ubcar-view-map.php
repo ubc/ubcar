@@ -88,10 +88,10 @@
 		 * @return void
 		 */
 		function add_styles() {
-			wp_register_style( 'ubcar_view_style', plugins_url().'/ubcar/css/ubcar-view-style.css' );
+			wp_register_style( 'ubcar_view_style', plugins_url( 'css/ubcar-view-style.css', dirname( __FILE__ ) ) );
 			wp_enqueue_style( 'ubcar_view_style' );
 			if( get_option( 'ubcar_css_choice' ) == 'full' ) {
-				wp_register_style( 'ubcar_view_full_style', plugins_url().'/ubcar/css/ubcar-view-full-style.css' );
+				wp_register_style( 'ubcar_view_full_style', plugins_url( '/css/ubcar-view-full-style.css', dirname( __FILE__ ) ) );
 				wp_enqueue_style( 'ubcar_view_full_style' );
 			}
 		}
@@ -341,7 +341,7 @@
 		 */
 		function ubcar_get_aggregate_information() {
 			$ubcar_aggregate_id = $_POST[ 'ubcar_aggregate_id' ];
-			if( $ubcar_aggregate_id != 'all' ) {
+			if( $ubcar_aggregate_id != 'all' && $ubcar_aggregate_id != 0 ) {
 				$ubcar_aggregate = get_post( $ubcar_aggregate_id );
 				$temp_array["id"] = $ubcar_aggregate_id;
 				$temp_array["title"] = $ubcar_aggregate->post_title;
