@@ -153,7 +153,6 @@
 				array_push( $response, $tempArray );
 			}
 			wp_send_json( $response );
-			die();
 		}
 		
 		/**
@@ -211,7 +210,7 @@
 		 * @return void
 		 */
 		function ubcar_layer_backward() {
-			$back_layer = ( sanitize_text_field( $_POST['ubcar_layer_offset'] ) - 2 ) * 10;
+			$back_layer = ( intval( $_POST['ubcar_layer_offset'] ) - 2 ) * 10;
 			if( $back_layer < 0 ) {
 				$back_layer = 0;
 			}
@@ -258,7 +257,7 @@
 				if( get_current_user_id() != $edit_post->post_author && !current_user_can( 'edit_pages' ) ) {
 					echo 0;
 				} else {
-					echo wp_send_json( $this->ubcar_get_layer( $edit_post->ID ) );
+					wp_send_json( $this->ubcar_get_layer( $edit_post->ID ) );
 				}
 			}
 		}
@@ -287,7 +286,7 @@
 					 );
 					wp_update_post( $update_array );
 					update_post_meta( sanitize_text_field( $_POST['ubcar_layer_edit_id'] ), 'ubcar_password', sanitize_text_field( $_POST['ubcar_layer_password'] ) );
-					echo wp_send_json( $this->ubcar_get_layer( sanitize_text_field( $_POST['ubcar_layer_edit_id'] ) ) );
+					wp_send_json( $this->ubcar_get_layer( sanitize_text_field( $_POST['ubcar_layer_edit_id'] ) ) );
 				}
 			}
 		}

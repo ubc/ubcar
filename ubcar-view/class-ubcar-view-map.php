@@ -318,7 +318,7 @@
 		 * @return void
 		 */
 		function ubcar_get_wiki_page() {
-			$ubcar_media_id = $_POST[ 'ubcar_wiki_id' ];
+			$ubcar_media_id = $_POST['ubcar_wiki_id'];
 			$ubcar_media_meta = get_post_meta( $ubcar_media_id, 'ubcar_media_meta', true );
 			$ubcar_media_url = html_entity_decode( $ubcar_media_meta["url"] );
 			if( class_exists( 'Wiki_Embed' ) ) {
@@ -506,7 +506,7 @@
 		 * @return void
 		 */
 		function ubcar_get_point_information() {
-			$ubcar_point_id = $_POST[ 'ubcar_point_id' ];
+			$ubcar_point_id = $_POST['ubcar_point_id'];
 			$ubcar_point = get_post( $ubcar_point_id );
 			$ubcar_point_meta = get_post_meta( $ubcar_point_id );
 			$temp_array = array();
@@ -541,7 +541,7 @@
 		 * @return void
 		 */
 		function ubcar_get_point_comments() {
-			$ubcar_point_id = $_POST[ 'ubcar_point_id' ];
+			$ubcar_point_id = $_POST['ubcar_point_id'];
 			echo '<ol class="commentlist">';
 			//Gather comments for a specific page/post
 			$comments = get_comments( array( 

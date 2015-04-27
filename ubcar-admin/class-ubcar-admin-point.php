@@ -168,7 +168,6 @@
 				array_push( $response, $tempArray );
 			}
 			wp_send_json( $response );
-			die();
 		}
 		
 		/**
@@ -230,7 +229,7 @@
 		 * @return void
 		 */
 		function ubcar_point_backward() {
-			$back_point = ( $_POST['ubcar_point_offset'] - 2 ) * 10;
+			$back_point = ( intval( $_POST['ubcar_point_offset'] ) - 2 ) * 10;
 			if( $back_point < 0 ) {
 				$back_point = 0;
 			}
@@ -277,7 +276,7 @@
 				if( get_current_user_id() != $edit_post->post_author && !current_user_can( 'edit_pages' ) ) {
 					echo 0;
 				} else {
-					echo wp_send_json( $this->ubcar_get_point( $edit_post->ID ) );
+					wp_send_json( $this->ubcar_get_point( $edit_post->ID ) );
 				}
 			}
 		}
@@ -305,10 +304,10 @@
 						'post_content' => sanitize_text_field( $_POST['ubcar_point_description'] )
 					);
 					wp_update_post( $update_array );
-					update_post_meta( $_POST['ubcar_point_edit_id'], 'ubcar_point_latitude', $_POST['ubcar_point_latitude']  );
-					update_post_meta( $_POST['ubcar_point_edit_id'], 'ubcar_point_longitude', $_POST['ubcar_point_longitude']  );
-					update_post_meta( $_POST['ubcar_point_edit_id'], 'ubcar_point_tags', $_POST['ubcar_point_tags']  );
-					echo wp_send_json( $this->ubcar_get_point( $_POST['ubcar_point_edit_id'] ) );
+					update_post_meta( $_POST['ubcar_point_edit_id'], 'ubcar_point_latitude', sanitize_text_field( $_POST['ubcar_point_latitude'] ) );
+					update_post_meta( $_POST['ubcar_point_edit_id'], 'ubcar_point_longitude', sanitize_text_field( $_POST['ubcar_point_longitude'] ) );
+					update_post_meta( $_POST['ubcar_point_edit_id'], 'ubcar_point_tags', sanitize_text_field( $_POST['ubcar_point_tags'] ) );
+					wp_send_json( $this->ubcar_get_point( $_POST['ubcar_point_edit_id'] ) );
 				}
 			}
 		}

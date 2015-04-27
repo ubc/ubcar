@@ -166,18 +166,6 @@
 							?>
 						</td>
 					</tr>
-					<tr>
-						<th scope="row"><label for="ubcar-student-points">Allow Subscribers to Create Points:</label></th>
-						<td>
-							<input name="ubcar-student-points" id="ubcar-student-points" type="checkbox">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="ubcar-student-tours">Allow Subscribers to Create Tours:</label></th>
-						<td>
-							<input name="ubcar-student-tours" id="ubcar-student-tours" type="checkbox">
-						</td>
-					</tr>
 				</table>
 				<h3>App Settings</h3>
 				<table class="form-table">
@@ -211,10 +199,10 @@
 		 */
 		function ubcar_options_updater_callback() {
 			if( current_user_can( 'edit_pages' ) ) {
-				update_option( 'ubcar_css_choice', $_POST['ubcar_css_choice'] );
-				update_option( 'ubcar_google_maps_api_key', $_POST['ubcar_google_maps_api_key'] );
-				update_option( 'ubcar_app_title', $_POST['ubcar_app_title'] );
-				update_option( 'ubcar_app_introduction', $_POST['ubcar_app_introduction'] );
+				update_option( 'ubcar_css_choice', esc_attr( $_POST['ubcar_css_choice'] ) );
+				update_option( 'ubcar_google_maps_api_key', esc_attr( $_POST['ubcar_google_maps_api_key'] ) );
+				update_option( 'ubcar_app_title', esc_attr( $_POST['ubcar_app_title'] ) );
+				update_option( 'ubcar_app_introduction', esc_attr( $_POST['ubcar_app_introduction'] ) );
 				echo 'UBCAR options updated!';
 			} else {
 				echo 'You do not have privileges to update these options.';

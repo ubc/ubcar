@@ -156,7 +156,7 @@ function deleteMedias( deleteID ) {
 			'ubcar_author_name': escapeHTML( jQuery( '#ubcar-author-name' ).val() )
 		};
 		jQuery.post( ajax_object.ajax_url, data, function( response ) {
-			if( response === '1' ) {
+			if( response === '0' ) {
 				alert( 'Sorry, you do not have permission to delete that media.' );
 			} else {
 				displayMedias( response );

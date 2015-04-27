@@ -379,7 +379,6 @@
 				array_push( $response, $tempArray );
 			}
 			wp_send_json( $response );
-			die();
 		}
 		
 		/**
@@ -461,7 +460,7 @@
 		 * @return void
 		 */
 		function ubcar_media_initial() {
-			$this->ubcar_media_get_medias( 0, $_POST['ubcar_author_name']  );
+			$this->ubcar_media_get_medias( 0, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
 		}
 		
 		/**
@@ -473,7 +472,7 @@
 		 * @return void
 		 */
 		function ubcar_media_forward() {
-			$this->ubcar_media_get_medias( intval( $_POST['ubcar_media_offset'] ) * 10, $_POST['ubcar_author_name']  );
+			$this->ubcar_media_get_medias( intval( $_POST['ubcar_media_offset'] ) * 10, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
 		}
 		
 		/**
@@ -485,11 +484,11 @@
 		 * @return void
 		 */
 		function ubcar_media_backward() {
-			$back_media = ( $_POST['ubcar_media_offset'] - 2 ) * 10;
+			$back_media = ( intval( $_POST['ubcar_media_offset'] ) - 2 ) * 10;
 			if( $back_media < 0 ) {
 				$back_media = 0;
 			}
-			$this->ubcar_media_get_medias( $back_media, $_POST['ubcar_author_name'] );
+			$this->ubcar_media_get_medias( $back_media, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
 		}
 		
 		/**
@@ -504,10 +503,10 @@
 			global $wpdb;
 			$delete_post = get_post( $_POST['ubcar_media_delete_id'] );
 			if ( !isset( $_POST['ubcar_nonce_field'] ) || !wp_verify_nonce( $_POST['ubcar_nonce_field'],'ubcar_nonce_check' )  ) {
-				echo 1;
+				echo 0;
 			} else {
 				if( get_current_user_id() != $delete_post->post_author && !current_user_can( 'edit_pages' ) ) {
-					echo 1;
+					echo 0;
 				} else {
 					$ubcar_media_meta = get_post_meta( $_POST['ubcar_media_delete_id'], 'ubcar_media_meta', true );
 					$ubcar_media_point = $ubcar_media_meta['location'];
@@ -539,7 +538,7 @@
 					}
 					
 					wp_delete_post( $_POST['ubcar_media_delete_id'] );
-					$this->ubcar_media_get_medias( 0, $_POST['ubcar_author_name']  );
+					$this->ubcar_media_get_medias( 0, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
 				}
 			}
 			die();
@@ -584,7 +583,7 @@
 					$ubcar_media_to_return = $this->ubcar_get_media( $edit_post->ID );
 					$ubcar_media_to_return["all_locations"] = $ubcar_all_points_pared;
 					$ubcar_media_to_return["all_layers"] = $ubcar_all_layers_pared;
-					echo wp_send_json( $ubcar_media_to_return );
+					wp_send_json( $ubcar_media_to_return );
 				}
 			}
 		}
@@ -701,7 +700,7 @@
 							}
 						}
 					}
-					echo wp_send_json( $this->ubcar_get_media( $_POST['ubcar_media_edit_id'] ) );
+					wp_send_json( $this->ubcar_get_media( $_POST['ubcar_media_edit_id'] ) );
 				}
 			}
 		}

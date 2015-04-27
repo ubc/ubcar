@@ -141,7 +141,7 @@ function UBCARMap( map ) {
 		}
 		objectInstance.resizeMap( );
 		ubcarPoints[ aggregate_id  ].map_data.addListener( 'mouseover', function( event ) {
-			mapInfowindow.setContent( '<div style="text-align: center;">' + event.feature.getProperty( 'title' ) + ' ( #' + event.feature.getProperty( 'id' ) + ' )</div>' );
+			mapInfowindow.setContent( '<div style="text-align: center;">' + event.feature.getProperty( 'title' ) + ' (#' + event.feature.getProperty( 'id' ) + ')</div>' );
 			anchor = new google.maps.MVCObject( );
 			anchor.set( 'position', event.latLng );
 			mapInfowindow.open( mapInstance, anchor );
@@ -397,7 +397,7 @@ function UBCARMap( map ) {
 		var htmlStringMedia, htmlStringDescription, wikiID, data;
 
 		htmlStringMedia = '';
-		htmlStringDescription = '<h4>' + response.point_title + ' ( ' + response.pointID +' )</h4>';
+		htmlStringDescription = '<h4>' + response.point_title + ' (#' + response.point_ID +')</h4>';
 		htmlStringDescription += '<p>' + response.point_description + '</p>';
 		htmlStringDescription += '<p class="ubcar-meta">Latitude: ' + response.point_latitude + ', Longitude: ' + response.point_longitude + '</p>';
 		htmlStringDescription += '<p>Tags: ' + response.point_tags + '</p>';

@@ -24,7 +24,7 @@ Installation
 Use
 ---
 1. Type the shortcode [ubcar-map] on a WordPress Page to have it display the UBCAR frontend there.
-2. UBCAR has four special GET request fields that can be called from the UBCAR frontend page URL:
+2. UBCAR has three special GET request fields that can be called from the UBCAR frontend page URL:
  - **point**: displays a single point (e.g., "?point=1")
  - **layer**: displays a single layer (e.g., "?layer=2")
  - **tour**: displays a single tour (e.g., "?tour=3")
@@ -39,6 +39,8 @@ Future Expansions
 
 Change Log
 ----------
+
+0.9.1 - Revised security procedures, bug fixes
 
 0.9.0 - Brought up to WordPress coding standards
 

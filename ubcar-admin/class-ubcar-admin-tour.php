@@ -168,7 +168,6 @@
 				array_push( $response, $temp_array );
 			}
 			wp_send_json( $response );
-			die();
 		}
 		
 		/**
@@ -238,7 +237,7 @@
 		 * @return void
 		 */
 		function ubcar_tour_backward() {
-			$back_tour = ( $_POST['ubcar_tour_offset'] - 2 ) * 10;
+			$back_tour = ( intval( $_POST['ubcar_tour_offset'] ) - 2 ) * 10;
 			if( $back_tour < 0 ) {
 				$back_tour = 0;
 			}
@@ -295,7 +294,7 @@
 					}
 					$ubcar_tour_to_return = $this->ubcar_get_tour( $edit_post->ID );
 					$ubcar_tour_to_return["all_locations"] = $ubcar_all_points_pared;
-					echo wp_send_json( $ubcar_tour_to_return );
+					wp_send_json( $ubcar_tour_to_return );
 				}
 			}
 		}
@@ -324,9 +323,9 @@
 					);
 					wp_update_post( $update_array );
 					if( isset( $_POST['ubcar_tour_locations'] ) ) {
-						update_post_meta( $_POST['ubcar_tour_edit_id'], 'ubcar_tour_locations', $_POST['ubcar_tour_locations'] );
+						update_post_meta( $_POST['ubcar_tour_edit_id'], 'ubcar_tour_locations', sanitize_text_field( $_POST['ubcar_tour_locations'] ) );
 					}
-					echo wp_send_json( $this->ubcar_get_tour( $_POST['ubcar_tour_edit_id'] ) );
+					wp_send_json( $this->ubcar_get_tour( $_POST['ubcar_tour_edit_id'] ) );
 				}
 			}
 		}
