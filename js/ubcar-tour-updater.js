@@ -86,7 +86,6 @@ function forwardTours() {
 		'action' : 'tour_forward',
 		'ubcar_tour_offset' : escapeHTML( jQuery( '#ubcar-tour-display-count' ).html() )
 	};
-	alert( jQuery( '#ubcar-tour-display-count' ).html() );
 	jQuery.post( ajax_object.ajax_url, data, function( response ) {
 		displayTours( response );
 		currentPage = parseInt( jQuery( '#ubcar-tour-display-count' ).html() );
@@ -160,10 +159,13 @@ function deleteTours( deleteID ) {
  */
 function displayTours( response ) {
 	
+	if( Object.prototype.toString.call( response ) === '[object Array]' ) {
+	
 	var htmlString, deleteID, editID;
 	
 	var htmlString = '<tr><td>ID</td><td>Title</td><td>Uploader</td><td>Date Uploaded</td><td>Description</td><td>Locations</td><td>Action</td></tr>';
 	for( i in response ) {
+	
 		htmlString += '<tr id="ubcar-tour-line-';
 		htmlString += response[ i ].ID;
 		htmlString += '"><td>';
@@ -192,6 +194,10 @@ function displayTours( response ) {
 		htmlString = 'No tours found.';
 	}
 	jQuery( '#ubcar-tour-table' ).html( htmlString );
+	
+	} else {
+		alert( 'An UBCAR error has occurred. Please log out and log in again.' );
+	}
 	
 	jQuery( '[ id^=ubcar-tour-delete- ]' ).click(function() {
 		deleteID = jQuery( this ).attr( 'id' ).replace( 'ubcar-tour-delete-', '' );
@@ -223,74 +229,77 @@ function editTours( editID ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have permission to edit that tour.' );
 		} else {
-			htmlString = '<td>';
-			htmlString += response.ID;
-			htmlString += '</td><td><input type="text" id="ubcar-tour-edit-title-';
-			htmlString += response.ID;
-			htmlString += '" value="';
-			htmlString += response.title;
-			htmlString += '" /></td><td>';
-			htmlString += response.uploader;
-			htmlString += '</td><td>';
-			htmlString += response.date;
-			htmlString += '</td><td><textarea id="ubcar-tour-edit-description-';
-			htmlString += response.ID;
-			htmlString += '">';
-			htmlString += response.description;
-			htmlString += '</textarea></td><td style="text-align: center">';
-			htmlString += '<div class="button button-primary" id="ubcar-tour-edit-locations-';
-			htmlString += response.ID;
-			htmlString += '">Edit Points</div><div class="ubcar-full-screen-popup" id="ubcar-reorder-locations-';
-			htmlString += response.ID;
-			htmlString += '">';
-			htmlString += '<h3>Edit Points for Tour ' + response.ID + '</h3>';
-			htmlString += '<div class="button button-primary" id="ubcar-tour-close-edit-locations-';
-			htmlString += response.ID;
-			htmlString += '">Close</div>';
-			
-			htmlStringSelected = '<div class="ubcar-tour-locations">';
-			htmlStringSelected += '<h4>Selected Points</h4>';
-			htmlStringSelected += '<ul id="ubcar-tour-locations-selected-list-reorder-'
-			htmlStringSelected += response.ID;
-			htmlStringSelected += '" class="ubcar-tour-reorder-locations-'
-			htmlStringSelected += response.ID;
-			htmlStringSelected += '">';
-			
-			selectedLocations = [];
-			for( j in response.locations ) {
-				selectedLocations[ response.locations[ j ].ID ] = true;
-				htmlStringSelected += '<li>' + response.locations[ j ].title + ' ( #' + response.locations[ j ].ID + ' )';
-				htmlStringSelected += '<input type="hidden" value="' + response.locations[ j ].ID + '">';
-				htmlStringSelected += '</li>';
-			}
-			htmlStringSelected += '</ul>';
-			htmlStringComplete += '</div>';
-
-			htmlStringComplete = '<div class="ubcar-tour-locations">';
-			htmlStringComplete += '<h4>Available Points</h4>';
-			htmlStringComplete += '<ul id="ubcar-tour-locations-complete-list-reorder-'
-			htmlStringComplete += response.ID;
-			htmlStringComplete += '" class="ubcar-tour-reorder-locations-'
-			htmlStringComplete += response.ID;
-			htmlStringComplete += '">';
-			for( j in response.all_locations ) {
-				if( selectedLocations[ response.all_locations[ j ].ID ] != true ) {
-					htmlStringComplete += '<li>' + response.all_locations[ j ].title + ' ( #' + response.all_locations[ j ].ID + ' )';
-					htmlStringComplete += '<input type="hidden" value="' + response.all_locations[ j ].ID + '">';
-					htmlStringComplete += '</li>';
+		
+			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
+				htmlString = '<td>';
+				htmlString += response.ID;
+				htmlString += '</td><td><input type="text" id="ubcar-tour-edit-title-';
+				htmlString += response.ID;
+				htmlString += '" value="';
+				htmlString += response.title;
+				htmlString += '" /></td><td>';
+				htmlString += response.uploader;
+				htmlString += '</td><td>';
+				htmlString += response.date;
+				htmlString += '</td><td><textarea id="ubcar-tour-edit-description-';
+				htmlString += response.ID;
+				htmlString += '">';
+				htmlString += response.description;
+				htmlString += '</textarea></td><td style="text-align: center">';
+				htmlString += '<div class="button button-primary" id="ubcar-tour-edit-locations-';
+				htmlString += response.ID;
+				htmlString += '">Edit Points</div><div class="ubcar-full-screen-popup" id="ubcar-reorder-locations-';
+				htmlString += response.ID;
+				htmlString += '">';
+				htmlString += '<h3>Edit Points for Tour ' + response.ID + '</h3>';
+				htmlString += '<div class="button button-primary" id="ubcar-tour-close-edit-locations-';
+				htmlString += response.ID;
+				htmlString += '">Close</div>';
+				
+				htmlStringSelected = '<div class="ubcar-tour-locations">';
+				htmlStringSelected += '<h4>Selected Points</h4>';
+				htmlStringSelected += '<ul id="ubcar-tour-locations-selected-list-reorder-'
+				htmlStringSelected += response.ID;
+				htmlStringSelected += '" class="ubcar-tour-reorder-locations-'
+				htmlStringSelected += response.ID;
+				htmlStringSelected += '">';
+				
+				selectedLocations = [];
+				for( j in response.locations ) {
+					selectedLocations[ response.locations[ j ].ID ] = true;
+					htmlStringSelected += '<li>' + response.locations[ j ].title + ' ( #' + response.locations[ j ].ID + ' )';
+					htmlStringSelected += '<input type="hidden" value="' + response.locations[ j ].ID + '">';
+					htmlStringSelected += '</li>';
 				}
-			}
-			htmlStringComplete += '</ul>';
-			htmlStringComplete += '</div>';
+				htmlStringSelected += '</ul>';
+				htmlStringComplete += '</div>';
 
-			htmlString += htmlStringComplete;
-			htmlString += htmlStringSelected;
-			
-			htmlString += '</div></td>';
-			htmlString += '<td><div class="button button-primary" id="ubcar-tour-edit-submit-';
-			htmlString += response.ID;
-			htmlString += '">Upload Edit</div></td>';
-			jQuery( '#' + 'ubcar-tour-line-' + response.ID ).html( htmlString );
+				htmlStringComplete = '<div class="ubcar-tour-locations">';
+				htmlStringComplete += '<h4>Available Points</h4>';
+				htmlStringComplete += '<ul id="ubcar-tour-locations-complete-list-reorder-'
+				htmlStringComplete += response.ID;
+				htmlStringComplete += '" class="ubcar-tour-reorder-locations-'
+				htmlStringComplete += response.ID;
+				htmlStringComplete += '">';
+				for( j in response.all_locations ) {
+					if( selectedLocations[ response.all_locations[ j ].ID ] != true ) {
+						htmlStringComplete += '<li>' + response.all_locations[ j ].title + ' ( #' + response.all_locations[ j ].ID + ' )';
+						htmlStringComplete += '<input type="hidden" value="' + response.all_locations[ j ].ID + '">';
+						htmlStringComplete += '</li>';
+					}
+				}
+				htmlStringComplete += '</ul>';
+				htmlStringComplete += '</div>';
+
+				htmlString += htmlStringComplete;
+				htmlString += htmlStringSelected;
+				
+				htmlString += '</div></td>';
+				htmlString += '<td><div class="button button-primary" id="ubcar-tour-edit-submit-';
+				htmlString += response.ID;
+				htmlString += '">Upload Edit</div></td>';
+				jQuery( '#' + 'ubcar-tour-line-' + response.ID ).html( htmlString );
+			}
 		}
 		jQuery(function() {
 			jQuery( '#ubcar-tour-locations-selected-list-reorder-' + response.ID + ', #ubcar-tour-locations-complete-list-reorder-' + response.ID ).sortable( {
@@ -336,24 +345,27 @@ function editToursSubmit( thisthis ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have permission to delete that tour.' );
 		} else {
-			htmlString = '<td>';
-			htmlString += response.ID;
-			htmlString += '</td><td>';
-			htmlString += response.title;
-			htmlString += '</td><td>';
-			htmlString += response.uploader;
-			htmlString += '</td><td>';
-			htmlString += response.date;
-			htmlString += '</td><td>';
-			htmlString += response.description;
-			htmlString += '</td><td><div style="max-height: 200px; overflow: scroll">';
-			htmlString += '<ol id="ubcar-tour-locations-display">';
-			for( j in response.locations ) {
-				htmlString += '<li>' + response.locations[ j ].title + ' ( #' + response.locations[ j ].ID + ' )</li>';
+			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
+				
+				htmlString = '<td>';
+				htmlString += response.ID;
+				htmlString += '</td><td>';
+				htmlString += response.title;
+				htmlString += '</td><td>';
+				htmlString += response.uploader;
+				htmlString += '</td><td>';
+				htmlString += response.date;
+				htmlString += '</td><td>';
+				htmlString += response.description;
+				htmlString += '</td><td><div style="max-height: 200px; overflow: scroll">';
+				htmlString += '<ol id="ubcar-tour-locations-display">';
+				for( j in response.locations ) {
+					htmlString += '<li>' + response.locations[ j ].title + ' ( #' + response.locations[ j ].ID + ' )</li>';
+				}
+				htmlString += '</ol>';
+				htmlString += '</div></td><td>Updated!</td>';
+				jQuery( '#' + 'ubcar-tour-line-' + response.ID ).html( htmlString );
 			}
-			htmlString += '</ol>';
-			htmlString += '</div></td><td>Updated!</td>';
-			jQuery( '#' + 'ubcar-tour-line-' + response.ID ).html( htmlString );
 		}
 	});
 }

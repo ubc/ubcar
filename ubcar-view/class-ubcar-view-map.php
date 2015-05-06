@@ -236,8 +236,6 @@
 		 * @return void
 		 */
 		function ubcar_comments_callback( $comment, $args, $depth ) {
-			$GLOBALS['comment'] = $comment;
-			extract( $args, EXTR_SKIP );
 			$user = get_user_by( 'email', $comment->comment_author_email );
 			echo '<div ';
 			comment_class( empty( $args['has_children'] ) ? '' : 'parent' );
@@ -262,7 +260,7 @@
 		 * @return void
 		 */
 		function ubcar_submit_comment() {
-			if ( !isset( $_POST['ubcar_nonce_field'] ) || !wp_verify_nonce( $_POST['ubcar_nonce_field'],'ubcar_nonce_check' ) || !is_user_logged_in() ) {
+			if ( !isset( $_POST['ubcar_nonce_field'] ) || !wp_verify_nonce( $_POST['ubcar_nonce_field'],'ubcar_nonce_check' ) || !is_user_logged_in() || get_post_type( $_POST['ubcar_point_id'] ) != 'ubcar_point' ) {
 				echo 0;
 			} else {
 				global $current_user;
@@ -290,7 +288,7 @@
 		 * @return void
 		 */
 		function ubcar_submit_reply() {
-			if ( !isset( $_POST['ubcar_nonce_field'] ) || !wp_verify_nonce( $_POST['ubcar_nonce_field'],'ubcar_nonce_check' ) || !is_user_logged_in() ) {
+			if ( !isset( $_POST['ubcar_nonce_field'] ) || !wp_verify_nonce( $_POST['ubcar_nonce_field'],'ubcar_nonce_check' ) || !is_user_logged_in() || get_post_type( $_POST['ubcar_point_id'] ) != 'ubcar_point' ) {
 				echo 0;
 			} else {
 				global $current_user;

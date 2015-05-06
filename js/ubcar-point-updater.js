@@ -175,38 +175,43 @@ function deletePoints( deleteID ) {
  */
 function displayPoints( response ) {
 	
-	var htmlString, deleteID, editID;
+	if( Object.prototype.toString.call( response ) === '[object Array]' ) {
 	
-	htmlString = '<tr><td>ID</td><td>Title</td><td>Uploader</td><td>Date Uploaded</td><td>Description</td><td>Latitude</td><td>Longitude</td><td>Tags</td><td>Action</td></tr>';
-	for( i in response ) {
-		htmlString += '<tr id="ubcar-point-line-';
-		htmlString += response[ i ].ID;
-		htmlString += '"><td>';
-		htmlString += response[ i ].ID;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].title;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].uploader;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].date;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].description;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].latitude;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].longitude;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].tags;
-		htmlString += '</td><td><a id="ubcar-point-edit-';
-		htmlString += response[ i ].ID;
-		htmlString += '" class="ubcar-edit-delete-control">Edit</a>/<a class="ubcar-edit-delete-control" id="ubcar-point-delete-';
-		htmlString += response[ i ].ID;
-		htmlString += '">Delete</a></td></tr>';
+		var htmlString, deleteID, editID;
+		
+		htmlString = '<tr><td>ID</td><td>Title</td><td>Uploader</td><td>Date Uploaded</td><td>Description</td><td>Latitude</td><td>Longitude</td><td>Tags</td><td>Action</td></tr>';
+		for( i in response ) {
+			htmlString += '<tr id="ubcar-point-line-';
+			htmlString += response[ i ].ID;
+			htmlString += '"><td>';
+			htmlString += response[ i ].ID;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].title;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].uploader;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].date;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].description;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].latitude;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].longitude;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].tags;
+			htmlString += '</td><td><a id="ubcar-point-edit-';
+			htmlString += response[ i ].ID;
+			htmlString += '" class="ubcar-edit-delete-control">Edit</a>/<a class="ubcar-edit-delete-control" id="ubcar-point-delete-';
+			htmlString += response[ i ].ID;
+			htmlString += '">Delete</a></td></tr>';
+		}
+		if( response.length === 0 ) {
+			htmlString = 'No points found.';
+		}
+		jQuery( '#ubcar-point-table' ).html( htmlString );
+	} else {
+		alert( 'An UBCAR error has occurred! Please log out and log back in again.' );
 	}
-	if( response.length === 0 ) {
-		htmlString = 'No points found.';
-	}
-	jQuery( '#ubcar-point-table' ).html( htmlString );
 	
 	jQuery( '[ id^=ubcar-point-delete- ]' ).click(function() {
 		deleteID = jQuery( this ).attr( 'id' ).replace( 'ubcar-point-delete-', '' );
@@ -238,36 +243,39 @@ function editPoints( editID ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have pssermission to edit that point.' );
 		} else {
-			htmlString = '<td>';
-			htmlString += response.ID;
-			htmlString += '</td><td><input type="text" id="ubcar-point-edit-title-';
-			htmlString += response.ID;
-			htmlString += '" value="';
-			htmlString += response.title;
-			htmlString += '" /></td><td>';
-			htmlString += response.uploader;
-			htmlString += '</td><td>';
-			htmlString += response.date;
-			htmlString += '</td><td><textarea id="ubcar-point-edit-description-';
-			htmlString += response.ID;
-			htmlString += '">';
-			htmlString += response.description;
-			htmlString += '</textarea></td><td><input type="text" id="ubcar-point-edit-latitude-';
-			htmlString += response.ID;
-			htmlString += '" value="';
-			htmlString += response.latitude;
-			htmlString += '" /></td><td><input type="text" id="ubcar-point-edit-longitude-';
-			htmlString += response.ID;
-			htmlString += '" value="';
-			htmlString += response.longitude;
-			htmlString += '" /></td><td><input type="text" id="ubcar-point-edit-tags-';
-			htmlString += response.ID;
-			htmlString += '" value="';
-			htmlString += response.tags;
-			htmlString += '" /></td><td><div class="button button-primary" id="ubcar-point-edit-submit-';
-			htmlString += response.ID;
-			htmlString += '">Upload Edit</div></td>';
-			jQuery( '#' + 'ubcar-point-line-' + response.ID ).html( htmlString );
+			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
+			
+				htmlString = '<td>';
+				htmlString += response.ID;
+				htmlString += '</td><td><input type="text" id="ubcar-point-edit-title-';
+				htmlString += response.ID;
+				htmlString += '" value="';
+				htmlString += response.title;
+				htmlString += '" /></td><td>';
+				htmlString += response.uploader;
+				htmlString += '</td><td>';
+				htmlString += response.date;
+				htmlString += '</td><td><textarea id="ubcar-point-edit-description-';
+				htmlString += response.ID;
+				htmlString += '">';
+				htmlString += response.description;
+				htmlString += '</textarea></td><td><input type="text" id="ubcar-point-edit-latitude-';
+				htmlString += response.ID;
+				htmlString += '" value="';
+				htmlString += response.latitude;
+				htmlString += '" /></td><td><input type="text" id="ubcar-point-edit-longitude-';
+				htmlString += response.ID;
+				htmlString += '" value="';
+				htmlString += response.longitude;
+				htmlString += '" /></td><td><input type="text" id="ubcar-point-edit-tags-';
+				htmlString += response.ID;
+				htmlString += '" value="';
+				htmlString += response.tags;
+				htmlString += '" /></td><td><div class="button button-primary" id="ubcar-point-edit-submit-';
+				htmlString += response.ID;
+				htmlString += '">Upload Edit</div></td>';
+				jQuery( '#' + 'ubcar-point-line-' + response.ID ).html( htmlString );
+			}
 		}
 		jQuery( '#ubcar-point-edit-submit-' + editID ).click(function() {
 			editPointsSubmit( this );
@@ -300,6 +308,8 @@ function editPointsSubmit( thisthis ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have permission to delete that point.' );
 		} else {
+			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
+			
 			htmlString = '<td>';
 			htmlString += response.ID;
 			htmlString += '</td><td>';
@@ -318,6 +328,7 @@ function editPointsSubmit( thisthis ) {
 			htmlString += response.tags;
 			htmlString += '</td><td>Updated!</td>';
 			jQuery( '#' + 'ubcar-point-line-' + response.ID ).html( htmlString );
+			}
 		}
 	});
 }

@@ -141,7 +141,8 @@
 				
 				$ubcar_tour_id = wp_insert_post( $ubcar_tour_post );
 				if( isset( $_POST['ubcar_tour_locations'] ) ) {
-					add_post_meta( $ubcar_tour_id, 'ubcar_tour_locations', $_POST['ubcar_tour_locations'] );
+					$ubcar_tour_locations = array_map( 'esc_attr', $_POST['ubcar_tour_locations']);
+					add_post_meta( $ubcar_tour_id, 'ubcar_tour_locations', $ubcar_tour_locations );
 				}
 				echo 'Submission uploaded!';
 			}
@@ -323,7 +324,8 @@
 					);
 					wp_update_post( $update_array );
 					if( isset( $_POST['ubcar_tour_locations'] ) ) {
-						update_post_meta( $_POST['ubcar_tour_edit_id'], 'ubcar_tour_locations', sanitize_text_field( $_POST['ubcar_tour_locations'] ) );
+						$ubcar_tour_locations = array_map( 'esc_attr', $_POST['ubcar_tour_locations']);
+						update_post_meta( $_POST['ubcar_tour_edit_id'], 'ubcar_tour_locations',  $ubcar_tour_locations );
 					}
 					wp_send_json( $this->ubcar_get_tour( $_POST['ubcar_tour_edit_id'] ) );
 				}

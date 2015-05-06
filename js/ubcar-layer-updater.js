@@ -145,46 +145,53 @@ function deleteLayers( deleteID ) {
  * @param {Object[]} response JSON object of ubcar_layer posts' data
  */
 function displayLayers( response ) {
-	var htmlString, deleteID, editID;
-	htmlString = '<tr><td>ID</td><td>Title</td><td>Uploader</td><td>Date Uploaded</td><td>Description</td><td>Blocked?</td><td>Action</td></tr>';
-	for( i in response ) {
-		htmlString += '<tr id="ubcar-layer-line-';
-		htmlString += response[ i ].ID;
-		htmlString += '"><td>';
-		htmlString += response[ i ].ID;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].title;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].uploader;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].date;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].description;
-		htmlString += '</td><td style="text-align: center">';
-		htmlString += '<input type="checkbox" disabled';
-		if( response[ i ].password === 'true' ) {
-			htmlString += ' checked';
+
+	if( Object.prototype.toString.call( response ) === '[object Array]' ) {
+
+		var htmlString, deleteID, editID;
+		htmlString = '<tr><td>ID</td><td>Title</td><td>Uploader</td><td>Date Uploaded</td><td>Description</td><td>Blocked?</td><td>Action</td></tr>';
+		for( i in response ) {
+			htmlString += '<tr id="ubcar-layer-line-';
+			htmlString += response[ i ].ID;
+			htmlString += '"><td>';
+			htmlString += response[ i ].ID;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].title;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].uploader;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].date;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].description;
+			htmlString += '</td><td style="text-align: center">';
+			htmlString += '<input type="checkbox" disabled';
+			if( response[ i ].password === 'true' ) {
+				htmlString += ' checked';
+			}
+			htmlString += '></td><td><a id="ubcar-layer-edit-';
+			htmlString += response[ i ].ID;
+			htmlString += '" class="ubcar-edit-delete-control">Edit</a>/<a class="ubcar-edit-delete-control" id="ubcar-layer-delete-';
+			htmlString += response[ i ].ID;
+			htmlString += '">Delete</a></td></tr>';
 		}
-		htmlString += '></td><td><a id="ubcar-layer-edit-';
-		htmlString += response[ i ].ID;
-		htmlString += '" class="ubcar-edit-delete-control">Edit</a>/<a class="ubcar-edit-delete-control" id="ubcar-layer-delete-';
-		htmlString += response[ i ].ID;
-		htmlString += '">Delete</a></td></tr>';
-	}
-	if( response.length === 0 ) {
-		htmlString = 'No layers found.';
-	}
-	jQuery( '#ubcar-layer-table' ).html( htmlString );
+		if( response.length === 0 ) {
+			htmlString = 'No layers found.';
+		}
+		jQuery( '#ubcar-layer-table' ).html( htmlString );
+		
+		jQuery( '[ id^=ubcar-layer-delete- ]' ).click(function() {
+			deleteID = jQuery( this ).attr( 'id' ).replace( 'ubcar-layer-delete-', '' );
+			deleteLayers( deleteID );
+		});
+		
+		jQuery( '[ id^=ubcar-layer-edit- ]' ).click(function() {
+			editID = jQuery( this ).attr( 'id' ).replace( 'ubcar-layer-edit-', '' );
+			editLayers( editID );
+		});
 	
-	jQuery( '[ id^=ubcar-layer-delete- ]' ).click(function() {
-		deleteID = jQuery( this ).attr( 'id' ).replace( 'ubcar-layer-delete-', '' );
-		deleteLayers( deleteID );
-	});
-	
-	jQuery( '[ id^=ubcar-layer-edit- ]' ).click(function() {
-		editID = jQuery( this ).attr( 'id' ).replace( 'ubcar-layer-edit-', '' );
-		editLayers( editID );
-	});
+	} else {
+		alert( 'An UBCAR error has occurred. Please log out and try again.' );
+	}
 }
 
 /**
@@ -202,32 +209,37 @@ function editLayers( editID ) {
 	};
 	jQuery.post( ajax_object.ajax_url, data, function( response ) {
 		if( response === false ) {
-			alert( 'Sorry, you do not have pssermission to edit that layer.' );
+			alert( 'Sorry, you do not have permission to edit that layer.' );
 		} else {
-			htmlString = '<td>';
-			htmlString += response.ID;
-			htmlString += '</td><td><input type="text" id="ubcar-layer-edit-title-';
-			htmlString += response.ID;
-			htmlString += '" value="';
-			htmlString += response.title;
-			htmlString += '" /></td><td>';
-			htmlString += response.uploader;
-			htmlString += '</td><td>';
-			htmlString += response.date;
-			htmlString += '</td><td><textarea id="ubcar-layer-edit-description-';
-			htmlString += response.ID;
-			htmlString += '">';
-			htmlString += response.description;
-			htmlString += '</textarea></td><td style="text-align: center"><input type="checkbox" id="ubcar-layer-edit-password-';
-			htmlString += response.ID;
-			htmlString += '"';
-			if( response.password === 'true' ) {
-				htmlString += ' checked';
+
+			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
+
+				htmlString = '<td>';
+				htmlString += response.ID;
+				htmlString += '</td><td><input type="text" id="ubcar-layer-edit-title-';
+				htmlString += response.ID;
+				htmlString += '" value="';
+				htmlString += response.title;
+				htmlString += '" /></td><td>';
+				htmlString += response.uploader;
+				htmlString += '</td><td>';
+				htmlString += response.date;
+				htmlString += '</td><td><textarea id="ubcar-layer-edit-description-';
+				htmlString += response.ID;
+				htmlString += '">';
+				htmlString += response.description;
+				htmlString += '</textarea></td><td style="text-align: center"><input type="checkbox" id="ubcar-layer-edit-password-';
+				htmlString += response.ID;
+				htmlString += '"';
+				if( response.password === 'true' ) {
+					htmlString += ' checked';
+				}
+				htmlString += '></td><td><div class="button button-primary" id="ubcar-layer-edit-submit-';
+				htmlString += response.ID;
+				htmlString += '">Upload Edit</div></td>';
+				jQuery( '#' + 'ubcar-layer-line-' + response.ID ).html( htmlString );
+			
 			}
-			htmlString += '></td><td><div class="button button-primary" id="ubcar-layer-edit-submit-';
-			htmlString += response.ID;
-			htmlString += '">Upload Edit</div></td>';
-			jQuery( '#' + 'ubcar-layer-line-' + response.ID ).html( htmlString );
 		}
 		jQuery( '#ubcar-layer-edit-submit-' + editID ).click(function() {
 			editLayersSubmit( this );
@@ -256,22 +268,27 @@ function editLayersSubmit( thisthis ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have permission to delete that layer.' );
 		} else {
-			htmlString = '<td>';
-			htmlString += response.ID;
-			htmlString += '</td><td>';
-			htmlString += response.title;
-			htmlString += '</td><td>';
-			htmlString += response.uploader;
-			htmlString += '</td><td>';
-			htmlString += response.date;
-			htmlString += '</td><td>';
-			htmlString += response.description;
-			htmlString += '</td><td style="text-align: center"><input type="checkbox"';
-			if( response.password === 'true' ) {
-				htmlString += ' checked';
+		
+			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
+		
+				htmlString = '<td>';
+				htmlString += response.ID;
+				htmlString += '</td><td>';
+				htmlString += response.title;
+				htmlString += '</td><td>';
+				htmlString += response.uploader;
+				htmlString += '</td><td>';
+				htmlString += response.date;
+				htmlString += '</td><td>';
+				htmlString += response.description;
+				htmlString += '</td><td style="text-align: center"><input type="checkbox"';
+				if( response.password === 'true' ) {
+					htmlString += ' checked';
+				}
+				htmlString += ' disabled></td><td>Updated!</td>';
+				jQuery( '#' + 'ubcar-layer-line-' + response.ID ).html( htmlString );
+			
 			}
-			htmlString += ' disabled></td><td>Updated!</td>';
-			jQuery( '#' + 'ubcar-layer-line-' + response.ID ).html( htmlString );
 		}
 	});
 }

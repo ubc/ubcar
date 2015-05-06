@@ -179,62 +179,68 @@ function deleteMedias( deleteID ) {
  */
 function displayMedias( response ) {
 	
-	var htmlString, deleteID, editID;
+	if( Object.prototype.toString.call( response ) === '[object Array]' ) {
 	
-	htmlString = '<tr><td>ID</td><td>Preview</td><td>Title</td><td>Uploader</td><td>Date Uploaded</td><td>Description</td><td>Location</td><td>Layers</td><td>Hide?</td><td>Action</td></tr>';
-	for( i in response ) {
-		htmlString += '<tr id="ubcar-media-line-';
-		htmlString += response[ i ].ID;
-		htmlString += '"><td>';
-		htmlString += response[ i ].ID;
-		htmlString += '</td><td style="text-align: center">';
-		if( response[ i ].type === 'image' ) {
-			htmlString += '<a href="';
-			htmlString += response[ i ].full_size_url;
-			htmlString += '" TARGET="_blank"><img src="';
-			htmlString += response[ i ].url;
-			htmlString += '" alt="';
+		var htmlString, deleteID, editID;
+
+		htmlString = '<tr><td>ID</td><td>Preview</td><td>Title</td><td>Uploader</td><td>Date Uploaded</td><td>Description</td><td>Location</td><td>Layers</td><td>Hide?</td><td>Action</td></tr>';
+		for( i in response ) {
+			htmlString += '<tr id="ubcar-media-line-';
+			htmlString += response[ i ].ID;
+			htmlString += '"><td>';
+			htmlString += response[ i ].ID;
+			htmlString += '</td><td style="text-align: center">';
+			if( response[ i ].type === 'image' ) {
+				htmlString += '<a href="';
+				htmlString += response[ i ].full_size_url;
+				htmlString += '" TARGET="_blank"><img src="';
+				htmlString += response[ i ].url;
+				htmlString += '" alt="';
+				htmlString += response[ i ].title;
+				htmlString += '" /></a>';
+			} else if( response[ i ].type === 'video' ) {
+				htmlString += '<iframe width="150" height="150" src="//www.youtube.com/embed/' + response[ i ].url + '" frameborder="0" allowfullscreen></iframe>';
+			} else if( response[ i ].type === 'audio' ) {
+				htmlString += '<iframe width="150" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + response[ i ].url + '&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=false"></iframe>';
+			} else if( response[ i ].type === 'external' || response[ i ].type === 'wiki' ) {
+				htmlString += '<input disabled type="text" value="' + response[ i ].url + '">';
+			}
+			htmlString += '</td><td>';
 			htmlString += response[ i ].title;
-			htmlString += '" /></a>';
-		} else if( response[ i ].type === 'video' ) {
-			htmlString += '<iframe width="150" height="150" src="//www.youtube.com/embed/' + response[ i ].url + '" frameborder="0" allowfullscreen></iframe>';
-		} else if( response[ i ].type === 'audio' ) {
-			htmlString += '<iframe width="150" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + response[ i ].url + '&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=false"></iframe>';
-		} else if( response[ i ].type === 'external' || response[ i ].type === 'wiki' ) {
-			htmlString += '<input disabled type="text" value="' + response[ i ].url + '">';
+			htmlString += '</td><td>';
+			htmlString += response[ i ].uploader;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].date;
+			htmlString += '</td><td>';
+			htmlString += response[ i ].description;
+			htmlString += '</td><td>';
+			if( response[ i ].location != null ) {
+				htmlString += response[ i ].location.title + ' ( #' + response[ i ].location.ID + ' )';
+			}
+			htmlString += '</td><td>';
+			htmlString += '<select multiple disabled size="5">';
+			for( j in response[ i ].layers ) {
+				htmlString += '<option value="' + response[ i ].layers[ j ].ID + '">' + response[ i ].layers[ j ].title + ' ( #' + response[ i ].layers[ j ].ID + ' )</option>';
+			}
+			htmlString += '</select>';
+			htmlString += '</td><td style="text-align: center"><input type="checkbox" disabled ';
+			if( response[ i ].hidden === 'on' ) {
+				htmlString += 'checked ';
+			}
+			htmlString += '/></td><td><a id="ubcar-media-edit-';
+			htmlString += response[ i ].ID;
+			htmlString += '" class="ubcar-edit-delete-control">Edit</a>/<a class="ubcar-edit-delete-control" id="ubcar-media-delete-';
+			htmlString += response[ i ].ID;
+			htmlString += '">Delete</a></td></tr>';
 		}
-		htmlString += '</td><td>';
-		htmlString += response[ i ].title;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].uploader;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].date;
-		htmlString += '</td><td>';
-		htmlString += response[ i ].description;
-		htmlString += '</td><td>';
-		if( response[ i ].location != null ) {
-			htmlString += response[ i ].location.title + ' ( #' + response[ i ].location.ID + ' )';
+		if( response.length === 0 ) {
+			htmlString = 'No media found.';
 		}
-		htmlString += '</td><td>';
-		htmlString += '<select multiple disabled size="5">';
-		for( j in response[ i ].layers ) {
-			htmlString += '<option value="' + response[ i ].layers[ j ].ID + '">' + response[ i ].layers[ j ].title + ' ( #' + response[ i ].layers[ j ].ID + ' )</option>';
-		}
-		htmlString += '</select>';
-		htmlString += '</td><td style="text-align: center"><input type="checkbox" disabled ';
-		if( response[ i ].hidden === 'on' ) {
-			htmlString += 'checked ';
-		}
-		htmlString += '/></td><td><a id="ubcar-media-edit-';
-		htmlString += response[ i ].ID;
-		htmlString += '" class="ubcar-edit-delete-control">Edit</a>/<a class="ubcar-edit-delete-control" id="ubcar-media-delete-';
-		htmlString += response[ i ].ID;
-		htmlString += '">Delete</a></td></tr>';
-	}
-	if( response.length === 0 ) {
-		htmlString = 'No media found.';
-	}
 	jQuery( '#ubcar-media-table' ).html( htmlString );
+	} else {
+		alert( 'An UBCAR error has occurred! Please log out and back in.' );
+	}
+	
 	
 	jQuery( '[ id^=ubcar-media-delete- ]' ).click(function() {
 		deleteID = jQuery( this ).attr( 'id' ).replace( 'ubcar-media-delete-', '' );
@@ -266,75 +272,79 @@ function editMedias( editID ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have permission to edit that media.' );
 		} else {
-			htmlString = '<td>';
-			htmlString += response.ID;
-			htmlString += '</td><td style="text-align: center">';
-			if( response.type === 'image' ) {
-				htmlString += '<a href="';
-				htmlString += response.full_size_url;
-				htmlString += '" TARGET="_blank"><img src="';
-				htmlString += response.url;
-				htmlString += '" alt="';
+		
+			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
+		
+				htmlString = '<td>';
+				htmlString += response.ID;
+				htmlString += '</td><td style="text-align: center">';
+				if( response.type === 'image' ) {
+					htmlString += '<a href="';
+					htmlString += response.full_size_url;
+					htmlString += '" TARGET="_blank"><img src="';
+					htmlString += response.url;
+					htmlString += '" alt="';
+					htmlString += response.title;
+					htmlString += '" /></a>';
+				} else if( response.type === 'video' ) {
+					htmlString += '<iframe width="150" height="150" src="//www.youtube.com/embed/' + response.url + '" frameborder="0" allowfullscreen></iframe>';
+				} else if( response.type === 'audio' ) {
+					htmlString += '<iframe width="150" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + response.url + '&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=false"></iframe>';
+				} else if( response.type === 'external' || response.type === 'wiki' ) {
+					htmlString += '<input disabled type="text" value="' + response.url + '">';
+				}
+				htmlString += '</td><td><input type="text" id="ubcar-media-edit-title-';
+				htmlString += response.ID;
+				htmlString += '" value="';
 				htmlString += response.title;
-				htmlString += '" /></a>';
-			} else if( response.type === 'video' ) {
-				htmlString += '<iframe width="150" height="150" src="//www.youtube.com/embed/' + response.url + '" frameborder="0" allowfullscreen></iframe>';
-			} else if( response.type === 'audio' ) {
-				htmlString += '<iframe width="150" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + response.url + '&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=false"></iframe>';
-			} else if( response.type === 'external' || response.type === 'wiki' ) {
-				htmlString += '<input disabled type="text" value="' + response.url + '">';
-			}
-			htmlString += '</td><td><input type="text" id="ubcar-media-edit-title-';
-			htmlString += response.ID;
-			htmlString += '" value="';
-			htmlString += response.title;
-			htmlString += '" /></td><td>';
-			htmlString += response.uploader;
-			htmlString += '</td><td>';
-			htmlString += response.date;
-			htmlString += '</td><td><textarea ';
-			if( response.type === 'wiki' ) {
-				htmlString += 'disabled ';
-			}
-			htmlString += 'id="ubcar-media-edit-description-';
-			htmlString += response.ID;
-			htmlString += '">';
-			htmlString += response.description;
-			htmlString += '</textarea></td><td><select id="ubcar-media-edit-location-';
-			htmlString += response.ID;
-			htmlString += '">';
-			htmlString += '<option value="">---</option>';
-			for( j in response.all_locations ) {
-				htmlString += '<option ';
-				if( response.all_locations[ j ].ID === response.location.ID ) {
-					htmlString += 'selected ';
+				htmlString += '" /></td><td>';
+				htmlString += response.uploader;
+				htmlString += '</td><td>';
+				htmlString += response.date;
+				htmlString += '</td><td><textarea ';
+				if( response.type === 'wiki' ) {
+					htmlString += 'disabled ';
 				}
-				htmlString += 'value="' + response.all_locations[ j ].ID + '">' + response.all_locations[ j ].title + ' ( #' + response.all_locations[ j ].ID + ' )</option>';
-			}
-			htmlString += '"</select></td><td><select multiple id="ubcar-media-edit-layers-';
-			htmlString += response.ID;
-			htmlString += '">';
-			selectedLayers = [];
-			for( j in response.layers ) {
-				selectedLayers[ response.layers[ j ].ID ] = true;
-			}
-			for( j in response.all_layers ) {
-				htmlString += '<option ';
-				if( selectedLayers[ response.all_layers[ j ].ID ] === true ) {
-					htmlString += 'selected ';
+				htmlString += 'id="ubcar-media-edit-description-';
+				htmlString += response.ID;
+				htmlString += '">';
+				htmlString += response.description;
+				htmlString += '</textarea></td><td><select id="ubcar-media-edit-location-';
+				htmlString += response.ID;
+				htmlString += '">';
+				htmlString += '<option value="">---</option>';
+				for( j in response.all_locations ) {
+					htmlString += '<option ';
+					if( response.all_locations[ j ].ID === response.location.ID ) {
+						htmlString += 'selected ';
+					}
+					htmlString += 'value="' + response.all_locations[ j ].ID + '">' + response.all_locations[ j ].title + ' ( #' + response.all_locations[ j ].ID + ' )</option>';
 				}
-				htmlString += 'value="' + response.all_layers[ j ].ID + '">' + response.all_layers[ j ].title + ' ( #' + response.all_layers[ j ].ID + ' )</option>';
+				htmlString += '"</select></td><td><select multiple id="ubcar-media-edit-layers-';
+				htmlString += response.ID;
+				htmlString += '">';
+				selectedLayers = [];
+				for( j in response.layers ) {
+					selectedLayers[ response.layers[ j ].ID ] = true;
+				}
+				for( j in response.all_layers ) {
+					htmlString += '<option ';
+					if( selectedLayers[ response.all_layers[ j ].ID ] === true ) {
+						htmlString += 'selected ';
+					}
+					htmlString += 'value="' + response.all_layers[ j ].ID + '">' + response.all_layers[ j ].title + ' ( #' + response.all_layers[ j ].ID + ' )</option>';
+				}
+				htmlString += '"</select></td><td style="text-align: center"><input type="checkbox" id="ubcar-media-edit-hidden-';
+				htmlString += response.ID;
+				htmlString += '"';
+				if( response.hidden === 'on' ) {
+					htmlString += ' checked ';
+				}
+				htmlString += '/></td><td><div class="button button-primary" id="ubcar-media-edit-submit-';
+				htmlString += response.ID;
+				htmlString += '">Upload Edit</div></td>';
+				jQuery( '#ubcar-media-line-' + response.ID ).html( htmlString );
 			}
-			htmlString += '"</select></td><td style="text-align: center"><input type="checkbox" id="ubcar-media-edit-hidden-';
-			htmlString += response.ID;
-			htmlString += '"';
-			if( response.hidden === 'on' ) {
-				htmlString += ' checked ';
-			}
-			htmlString += '/></td><td><div class="button button-primary" id="ubcar-media-edit-submit-';
-			htmlString += response.ID;
-			htmlString += '">Upload Edit</div></td>';
-			jQuery( '#ubcar-media-line-' + response.ID ).html( htmlString );
 		}
 		jQuery( '#ubcar-media-edit-submit-' + editID ).click(function() {
 			editMediasSubmit( this, selectedLayers, response.location.ID );
@@ -398,50 +408,54 @@ function editMediasSubmit( thisthis, old_selectedLayers, old_location ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have permission to delete that media.' );
 		} else {
-			htmlString = '<td>';
-			htmlString += response.ID;
-			htmlString += '</td><td style="text-align: center">';
-			if( response.type === 'image' ) {
-				htmlString += '<a href="';
-				htmlString += response.full_size_url;
-				htmlString += '" TARGET="_blank"><img src="';
-				htmlString += response.url;
-				htmlString += '" alt="';
+		
+			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
+		
+				htmlString = '<td>';
+				htmlString += response.ID;
+				htmlString += '</td><td style="text-align: center">';
+				if( response.type === 'image' ) {
+					htmlString += '<a href="';
+					htmlString += response.full_size_url;
+					htmlString += '" TARGET="_blank"><img src="';
+					htmlString += response.url;
+					htmlString += '" alt="';
+					htmlString += response.title;
+					htmlString += '" /></a>';
+				} else if( response.type === 'video' ) {
+					htmlString += '<iframe width="150" height="150" src="//www.youtube.com/embed/' + response.url + '" frameborder="0" allowfullscreen></iframe>';
+				} else if( response.type === 'audio' ) {
+					htmlString += '<iframe width="150" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + response.url + '&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=false"></iframe>';
+				} else if( response.type === 'external' || response.type === 'wiki' ) {
+					htmlString += '<input disabled type="text" value="' + response.url + '">';
+				}
+				htmlString += '</td><td>';
 				htmlString += response.title;
-				htmlString += '" /></a>';
-			} else if( response.type === 'video' ) {
-				htmlString += '<iframe width="150" height="150" src="//www.youtube.com/embed/' + response.url + '" frameborder="0" allowfullscreen></iframe>';
-			} else if( response.type === 'audio' ) {
-				htmlString += '<iframe width="150" height="150" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/' + response.url + '&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=false"></iframe>';
-			} else if( response.type === 'external' || response.type === 'wiki' ) {
-				htmlString += '<input disabled type="text" value="' + response.url + '">';
+				htmlString += '</td><td>';
+				htmlString += response.uploader;
+				htmlString += '</td><td>';
+				htmlString += response.date;
+				htmlString += '</td><td>';
+				htmlString += response.description;
+				htmlString += '</td><td>';
+				if( response.location != null ) {
+					htmlString += response.location.title + ' ( #' + response.location.ID + ' )';
+				} else {
+					htmlString += 'Deleted location ( #? )';
+				}
+				htmlString += '</td><td>';
+				htmlString += '<select multiple disabled size="5">';
+				for( j in response.layers ) {
+					htmlString += '<option value="' + response.layers[ j ].ID + '">' + response.layers[ j ].title + ' ( #' + response.layers[ j ].ID + ' )</option>';
+				}
+				htmlString += '</select>';
+				htmlString += '</td><td style="text-align: center"><input type="checkbox" disabled ';
+				if( response.hidden === 'on' ) {
+					htmlString += 'checked ';
+				}
+				htmlString += '/></td><td>Updated!</td>';
+				jQuery( '#' + 'ubcar-media-line-' + response.ID ).html( htmlString );
 			}
-			htmlString += '</td><td>';
-			htmlString += response.title;
-			htmlString += '</td><td>';
-			htmlString += response.uploader;
-			htmlString += '</td><td>';
-			htmlString += response.date;
-			htmlString += '</td><td>';
-			htmlString += response.description;
-			htmlString += '</td><td>';
-			if( response.location != null ) {
-				htmlString += response.location.title + ' ( #' + response.location.ID + ' )';
-			} else {
-				htmlString += 'Deleted location ( #? )';
-			}
-			htmlString += '</td><td>';
-			htmlString += '<select multiple disabled size="5">';
-			for( j in response.layers ) {
-				htmlString += '<option value="' + response.layers[ j ].ID + '">' + response.layers[ j ].title + ' ( #' + response.layers[ j ].ID + ' )</option>';
-			}
-			htmlString += '</select>';
-			htmlString += '</td><td style="text-align: center"><input type="checkbox" disabled ';
-			if( response.hidden === 'on' ) {
-				htmlString += 'checked ';
-			}
-			htmlString += '/></td><td>Updated!</td>';
-			jQuery( '#' + 'ubcar-media-line-' + response.ID ).html( htmlString );
 		}
 	});
 }
