@@ -40,6 +40,8 @@ Future Expansions
 Change Log
 ----------
 
+0.9.2 - minor bug fixes
+
 0.9.1 - Revised security procedures, bug fixes
 
 0.9.0 - Brought up to WordPress coding standards

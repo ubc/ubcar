@@ -1,17 +1,17 @@
 <?php
 	/**
 	 * The UBCAR_View_map subclass
-	 * 
+	 *
 	 * This file defines the UBCAR_View_Map subclass. The UBCAR_View_Map class
 	 * displays UBCAR data on the frontend with the 'ubcar-map' shortcode. Any
 	 * specific UBCAR point requires data from all four UBCAR post types:
 	 * ubcar_point, ubcar_layer, ubcar_tour, and ubcar_media. Additionally,
 	 * regular WordPress comments and comment submission forms are displayed
 	 * for each point.
-	 * 
+	 *
 	 * A specific point, tour, or layer can be viewed with a '?point=#',
 	 * '?tour=#', or '?layer=#' GET request, where '#' is the ID of the object.
-	 * 
+	 *
 	 * @package UBCAR
 	 */
 
@@ -22,7 +22,7 @@
 
 		/**
 		 * The UBCAR_View_Map constructor.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -30,16 +30,16 @@
 			$this->add_shortcodes();
 			$this->add_actions();
 		}
-		
+
 		/**
 		 * This function adds the UBCAR_View_Map actions, including its AJAX
 		 * callback hooks. ( AJAX is about it in terms of actions, actually. )
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		function add_actions() {
-		
+
 			add_action( 'wp_ajax_nopriv_ubcar_aggregate_information_retriever', array( $this, 'ubcar_get_aggregate_information' ) );
 			add_action( 'wp_ajax_ubcar_aggregate_information_retriever', array( $this, 'ubcar_get_aggregate_information' ) );
 			add_action( 'wp_ajax_nopriv_ubcar_aggregate_points_retriever', array( $this, 'ubcar_get_aggregate_points' ) );
@@ -52,22 +52,22 @@
 			add_action( 'wp_ajax_ubcar_wiki_page', array( $this, 'ubcar_get_wiki_page' ) );
 			add_action( 'wp_ajax_ubcar_submit_comment', array( $this, 'ubcar_submit_comment' ) );
 			add_action( 'wp_ajax_ubcar_submit_reply', array( $this, 'ubcar_submit_reply' ) );
-			
+
 		}
-		
+
 		/**
 		 * This function adds the UBCAR_View_Map shortcodes.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		function add_shortcodes() {
 			add_shortcode( 'ubcar-map', array( $this, 'ubcar_make_map' ) );
 		}
-		
+
 		/**
 		 * This function adds the UBCAR_View_Map scripts, including Google Maps.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -80,10 +80,10 @@
 			wp_enqueue_script( 'jquery-effects-drop', array( 'jquery' ) );
 			wp_localize_script( 'ubcar_map_display_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 		}
-		
+
 		/**
 		 * This function adds the UBCAR_View_Map styles.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -95,11 +95,11 @@
 				wp_enqueue_style( 'ubcar_view_full_style' );
 			}
 		}
-		
+
 		/**
 		 * This function initializes the main UBCAR_View_Map page, which depends
 		 * on AJAX to populate it.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -126,7 +126,7 @@
 									foreach( $ubcar_layers as $ubcar_layer ) {
 										?>
 											<tr>
-											<td><input type="checkbox" id="<?php echo $ubcar_layer->ID ?>" /> <?php echo $ubcar_layer->post_title ?> ( #<?php echo $ubcar_layer->ID ?> )<br /></td>
+											<td><input type="checkbox" id="<?php echo $ubcar_layer->ID ?>" /> <?php echo $ubcar_layer->post_title ?> (#<?php echo $ubcar_layer->ID ?>)<br /></td>
 											</tr>
 										<?php
 									}
@@ -143,7 +143,7 @@
 								foreach( $ubcar_tours as $ubcar_tour ) {
 									?>
 										<tr>
-											<td><input type="checkbox" id="<?php echo $ubcar_tour->ID ?>" /> <?php echo $ubcar_tour->post_title ?> ( #<?php echo $ubcar_tour->ID ?> )<br /></td>
+											<td><input type="checkbox" id="<?php echo $ubcar_tour->ID ?>" /> <?php echo $ubcar_tour->post_title ?> (#<?php echo $ubcar_tour->ID ?>)<br /></td>
 										</tr>
 									<?php
 								}
@@ -221,16 +221,16 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * This is the callback function for
 		 * ubcar_map_click_point_updater_comments()'s wp_list_comments(),
 		 * formatting the retrieved comments.
-		 * 
+		 *
 		 * @param object comment
 		 * @args array $args
 		 * @param int $depth
-		 * 
+		 *
 		 * @global object comment
 		 * @access public
 		 * @return void
@@ -249,12 +249,12 @@
 			comment_text();
 			echo '<div class="ubcar-reply-area" id="ubcar-reply-area-' . get_comment_ID() . '"></div>';
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-map-view.js's
 		 * submit_new_comment() AJAX request, inserting a new comment for the
 		 * associated ubcar_point post.
-		 * 
+		 *
 		 * @access public
 		 * @global $current_user
 		 * @return void
@@ -277,12 +277,12 @@
 			}
 			die();
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-map-view.js's
 		 * submit_new_reply() AJAX request, inserting a new reply for the
 		 * associated comment of the ubcar_point post.
-		 * 
+		 *
 		 * @access public
 		 * @global $current_user
 		 * @return void
@@ -306,12 +306,12 @@
 			}
 			die();
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-map-view.js's display_point()
 		 * AJAX request, retrieving a wiki page's html if UBC CTLT's Wiki Embed
 		 * plugin is enabled or the wiki page's URL if it is not.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -328,12 +328,12 @@
 			}
 			die();
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-map-view.js's
 		 * retrieve_aggregate_information() AJAX request, retrieving information
 		 * the ubcar_layer or ubcar_tour itself.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -370,12 +370,12 @@
 			}
 			die();
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-map-view.js's
 		 * retrieve_points() AJAX request, retrieving the points associated
 		 * with a particular ubcar_layer, ubcar_tour, or ubcar_search.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -389,18 +389,18 @@
 				$ubcar_points_request = 'ubcar_tour_locations';
 			}
 			$ubcar_points = array();
-			
+
 			if( $ubcar_aggregate_type == 'ubcar_layer' || $ubcar_aggregate_type == 'ubcar_tour' ) {
 				$ubcar_point_metas = get_post_meta( $ubcar_aggregate_id, $ubcar_points_request, true );
 			} else if( $ubcar_aggregate_type == 'ubcar_search' ) {
-				$ubcar_point_metas = $wpdb->get_results( $wpdb->prepare( 
+				$ubcar_point_metas = $wpdb->get_results( $wpdb->prepare(
 					"SELECT post_id AS ID FROM $wpdb->postmeta
 					WHERE meta_key = '%s'
 					AND meta_value LIKE '%%%s%%'",
 					'ubcar_point_tags',
 					$ubcar_aggregate_id
 				) );
-				$ubcar_point_metas = array_merge( $wpdb->get_results( $wpdb->prepare( 
+				$ubcar_point_metas = array_merge( $wpdb->get_results( $wpdb->prepare(
 					"SELECT ID FROM $wpdb->posts
 					WHERE post_type = '%s'
 					AND post_title LIKE '%%%s%%'",
@@ -411,25 +411,25 @@
 				$args = array( 'posts_per_page' => -1, 'post_type' => 'ubcar_point' );
 				$ubcar_point_metas = get_posts( $args );
 			}
-			
-			$ubcar_geojson_response = array( 
+
+			$ubcar_geojson_response = array(
 				'type' => $ubcar_aggregate_type
 			);
-			
+
 			if( $ubcar_point_metas != null ) {
-			
-				$ubcar_geojson = array( 
+
+				$ubcar_geojson = array(
 					'type' => 'FeatureCollection',
 					'features' => array()
 				);
-				
-				$ubcar_geojson_bounds = array( 
+
+				$ubcar_geojson_bounds = array(
 					'ne_lat' => -90,
 					'ne_lng' => -180,
 					'sw_lat' => 90,
 					'sw_lng' => 180
 				);
-			
+
 				// This loop strips away the duplicate points inherent in the ubcar_layer_points
 				// metadata. ( Each ubcar_media associated with a point adds an element to this
 				// array. )
@@ -456,9 +456,9 @@
 							$temp_inner_array['type'] = 'Feature';
 							$temp_longitude = ( float )number_format( ( float )get_post_meta( $temp_point_id, 'ubcar_point_longitude', true ), 7, '.', '' );
 							$temp_latitude = ( float )number_format( ( float )get_post_meta( $temp_point_id, 'ubcar_point_latitude', true ), 7, '.', '' );
-							$temp_inner_array['geometry'] = array( 
+							$temp_inner_array['geometry'] = array(
 								'type' => 'Point',
-								'coordinates' =>  array( 
+								'coordinates' =>  array(
 									$temp_longitude,
 									$temp_latitude
 								),
@@ -475,7 +475,7 @@
 							if( $temp_longitude < $ubcar_geojson_bounds['sw_lng'] ) {
 								$ubcar_geojson_bounds['sw_lng'] = $temp_longitude;
 							}
-							$temp_inner_array['properties'] = array( 
+							$temp_inner_array['properties'] = array(
 								'id' => $temp_point->ID,
 								'title' => $temp_point->post_title
 							);
@@ -483,23 +483,23 @@
 						}
 					}
 				}
-				
+
 				if( $ubcar_geojson_bounds['ne_lat'] > -90 ) {
 					$ubcar_geojson_response['geojson_bounds'] = $ubcar_geojson_bounds;
 				}
-				
+
 				$ubcar_geojson_response['geojson'] = $ubcar_geojson;
 			}
-			
+
 			wp_send_json( $ubcar_geojson_response );
 			die();
 		}
-		
+
 		/**
 		 * This is the callback function for the first of ubcar-map-view.js's two
 		 * retrieve_point() AJAX requests, retrieving general information
 		 * associated with a single ubcar_point.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -529,12 +529,12 @@
 			echo wp_send_json( $temp_array );
 			die();
 		}
-		
+
 		/**
 		 * This is the callback function for the second of ubcar-map-view.js's two
 		 * retrieve_point() AJAX requests, retrieving comment information
 		 * associated with a single ubcar_point.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -542,7 +542,7 @@
 			$ubcar_point_id = $_POST['ubcar_point_id'];
 			echo '<ol class="commentlist">';
 			//Gather comments for a specific page/post
-			$comments = get_comments( array( 
+			$comments = get_comments( array(
 				'post_id' => $ubcar_point_id,
 				'order' => 'ASC'
 			) );
@@ -552,13 +552,13 @@
 			echo '</ol>';
 			die();
 		}
-		
+
 		 /**
 		 * This is the helper function for retrieving an ubcar_media datum from
 		 * the database.
-		 * 
+		 *
 		 * @param int $ubcar_media_id
-		 * 
+		 *
 		 * @access public
 		 * @return array
 		 */
@@ -600,6 +600,6 @@
 			$tempArray["layers"] = $ubcar_media_layer_names;
 			return $tempArray;
 		}
-		
+
 	}
 ?>

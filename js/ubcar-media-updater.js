@@ -215,12 +215,12 @@ function displayMedias( response ) {
 			htmlString += response[ i ].description;
 			htmlString += '</td><td>';
 			if( response[ i ].location != null ) {
-				htmlString += response[ i ].location.title + ' ( #' + response[ i ].location.ID + ' )';
+				htmlString += response[ i ].location.title + ' (#' + response[ i ].location.ID + ')';
 			}
 			htmlString += '</td><td>';
 			htmlString += '<select multiple disabled size="5">';
 			for( j in response[ i ].layers ) {
-				htmlString += '<option value="' + response[ i ].layers[ j ].ID + '">' + response[ i ].layers[ j ].title + ' ( #' + response[ i ].layers[ j ].ID + ' )</option>';
+				htmlString += '<option value="' + response[ i ].layers[ j ].ID + '">' + response[ i ].layers[ j ].title + ' (#' + response[ i ].layers[ j ].ID + ' )</option>';
 			}
 			htmlString += '</select>';
 			htmlString += '</td><td style="text-align: center"><input type="checkbox" disabled ';
@@ -318,7 +318,7 @@ function editMedias( editID ) {
 					if( response.all_locations[ j ].ID === response.location.ID ) {
 						htmlString += 'selected ';
 					}
-					htmlString += 'value="' + response.all_locations[ j ].ID + '">' + response.all_locations[ j ].title + ' ( #' + response.all_locations[ j ].ID + ' )</option>';
+					htmlString += 'value="' + response.all_locations[ j ].ID + '">' + response.all_locations[ j ].title + ' (#' + response.all_locations[ j ].ID + ' )</option>';
 				}
 				htmlString += '"</select></td><td><select multiple id="ubcar-media-edit-layers-';
 				htmlString += response.ID;
@@ -332,7 +332,7 @@ function editMedias( editID ) {
 					if( selectedLayers[ response.all_layers[ j ].ID ] === true ) {
 						htmlString += 'selected ';
 					}
-					htmlString += 'value="' + response.all_layers[ j ].ID + '">' + response.all_layers[ j ].title + ' ( #' + response.all_layers[ j ].ID + ' )</option>';
+					htmlString += 'value="' + response.all_layers[ j ].ID + '">' + response.all_layers[ j ].title + ' (#' + response.all_layers[ j ].ID + ' )</option>';
 				}
 				htmlString += '"</select></td><td style="text-align: center"><input type="checkbox" id="ubcar-media-edit-hidden-';
 				htmlString += response.ID;
@@ -439,14 +439,14 @@ function editMediasSubmit( thisthis, old_selectedLayers, old_location ) {
 				htmlString += response.description;
 				htmlString += '</td><td>';
 				if( response.location != null ) {
-					htmlString += response.location.title + ' ( #' + response.location.ID + ' )';
+					htmlString += response.location.title + ' (#' + response.location.ID + ')';
 				} else {
 					htmlString += 'Deleted location ( #? )';
 				}
 				htmlString += '</td><td>';
 				htmlString += '<select multiple disabled size="5">';
 				for( j in response.layers ) {
-					htmlString += '<option value="' + response.layers[ j ].ID + '">' + response.layers[ j ].title + ' ( #' + response.layers[ j ].ID + ' )</option>';
+					htmlString += '<option value="' + response.layers[ j ].ID + '">' + response.layers[ j ].title + ' (#' + response.layers[ j ].ID + ' )</option>';
 				}
 				htmlString += '</select>';
 				htmlString += '</td><td style="text-align: center"><input type="checkbox" disabled ';

@@ -292,9 +292,9 @@
 						$ubcar_media_post_meta['video_type'] = $this->ubcar_media_data_cleaner(  $_POST['ubcar-video-type'] );
 					} else if( $_POST['ubcar-media-type'] == 'external' || $_POST['ubcar-media-type'] == 'wiki' ) {
 						if( $_POST['ubcar-media-type'] == 'external' ) {
-							$ubcar_url_string = $this->ubcar_media_data_cleaner( $_POST['ubcar-external-url'] );
+							$ubcar_url_string = esc_url( $_POST['ubcar-external-url'] );
 						} else if( $_POST['ubcar-media-type'] == 'wiki' ) {
-							$ubcar_url_string = $this->ubcar_media_data_cleaner( $_POST['ubcar-wiki-url'] );
+							$ubcar_url_string = esc_url( $_POST['ubcar-wiki-url'] );
 							$ubcar_media_post['post_content'] = 'n/a';
 						}
 						$ubcar_url_array = parse_url( $ubcar_url_string );
@@ -310,7 +310,7 @@
 					if( $_POST['ubcar-media-type'] == 'imagewp' ) {
 						$ubcar_media_post_meta['type'] = 'image';
 					}
-					$ubcar_media_post_meta['url'] = $this->ubcar_media_data_cleaner( $ubcar_url );
+					$ubcar_media_post_meta['url'] =  $ubcar_url;
 					$ubcar_media_post_meta['location'] = $this->ubcar_media_data_cleaner( $_POST['ubcar-media-location'] );
 					$ubcar_media_post_meta['layers'] = array();
 					if( isset( $_POST['ubcar-media-layers'] ) ) {

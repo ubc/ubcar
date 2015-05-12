@@ -1,40 +1,40 @@
 <?php
 	/**
 	 * The UBCAR_Admin_Layer subclass
-	 * 
+	 *
 	 * This file defines the UBCAR_Admin_Layer subclass. The UBCAR_Admin_Layer
 	 * class manages ubcar_layer-type posts. ubcar_layer-type posts have three
 	 * extra pieces of metadata:
-	 * 
+	 *
 	 *  - ubcar_password: determines if a layer is visible to subscribers when
 	 *	  adding media ( used in the UBCAR_Admin_Medium class )
 	 *  - ubcar_layer_media: an array of ubcar_media-type post IDs associated
 	 *	  with this layer ( updated in the UBCAR_Admin_Medium class )
 	 *  - ubcar_layer_points: an array of ubcar_point-type post IDs associated
 	 *	  with this layer ( updated in the UBCAR_Admin_Medium class )
-	 * 
+	 *
 	 * @package UBCAR
 	 */
 
 	/**
 	 * The UBCAR_Admin_Layer subclass
 	 */
-	class UBCAR_Admin_Layer extends UBCAR_Admin {
-	
+class UBCAR_Admin_Layer extends UBCAR_Admin {
+
 		/**
 		 * The UBCAR_Admin_Layer constructor.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		public function __construct() {
 			$this->add_actions();
 		}
-		
+
 		/**
 		 * This function adds the UBCAR_Admin_Layer actions,including its AJAX
 		 * callback hooks.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -47,10 +47,10 @@
 			add_action( 'wp_ajax_layer_edit', array( $this, 'ubcar_layer_edit' ) );
 			add_action( 'wp_ajax_layer_edit_submit', array( $this, 'ubcar_layer_edit_submit' ) );
 		}
-		
+
 		/**
 		 * This function initializes the UBCAR Layer menu page.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -103,11 +103,11 @@
 			</div>
 			<?php
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-layer-updater.js's
 		 * update_layers() AJAX request, adding a new layer post.
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -117,29 +117,29 @@
 			if ( !isset( $_POST['ubcar_nonce_field'] ) || !wp_verify_nonce( $_POST['ubcar_nonce_field'],'ubcar_nonce_check' ) ) {
 				echo 'Sorry, WordPress has rejected your submission - specifically, your nonce did not verify. Please reload the form page and try again. This message may occur if you took more than a day to complete your form, if you do not have the appropriate privileges to submit data points but nonetheless try, or if the ubcar coding team made an error.';
 			} else {
-				$ubcar_layer_post = array( 
+				$ubcar_layer_post = array(
 					'post_title' => sanitize_text_field( $_POST['ubcar_layer_title'] ),
 					'post_content' => sanitize_text_field( $_POST['ubcar_layer_description'] ),
 					'post_status' => 'publish',
 					'post_type' => 'ubcar_layer'
 				 );
-				
+
 				$ubcar_layer_id = wp_insert_post( $ubcar_layer_post );
 				add_post_meta( $ubcar_layer_id, 'ubcar_password', sanitize_text_field( $_POST['ubcar_layer_password'] ) );
 				add_post_meta( $ubcar_layer_id, 'ubcar_layer_media', array() );
 				add_post_meta( $ubcar_layer_id, 'ubcar_layer_points', array() );
 				echo 'Submission uploaded!';
 			}
-			
+
 			die();
 		}
-		
+
 		/**
 		 * This is the helper function for retrieving a set of ubcar_layer data
 		 * from the database, converting it to JSON, and echoing it.
-		 * 
+		 *
 		 * @param int $ubcar_layer_offset
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -154,13 +154,13 @@
 			}
 			wp_send_json( $response );
 		}
-		
+
 		/**
 		 * This is a helper function for retrieving a single ubcar_layer datum
 		 * and metadatum from the database.
-		 * 
+		 *
 		 * @param int $layer_ubcar_id
-		 * 
+		 *
 		 * @access public
 		 * @return array
 		 */
@@ -177,35 +177,35 @@
 			$tempArray["password"] = $ubcar_layer_meta;
 			return $tempArray;
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-layer-updater.js's
 		 * initial AJAX request, displaying a set of ubcar_layer posts.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		function ubcar_layer_initial() {
 			$this->ubcar_layer_get_layers( 0 );
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-layer-updater.js's
 		 * forward_layers() AJAX request, displaying the next set of
 		 * ubcar_layer posts.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		function ubcar_layer_forward() {
 			$this->ubcar_layer_get_layers( intval( $_POST['ubcar_layer_offset'] ) * 10 );
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-layer-updater.js's
 		 * backward_layers() AJAX request, displaying the previous set of
 		 * ubcar_layer posts.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -216,11 +216,11 @@
 			}
 			$this->ubcar_layer_get_layers( $back_layer );
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-layer-updater.js's
 		 * delete_layers() AJAX request, deleting an ubcar_layer post
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -239,11 +239,11 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-layer-updater.js's
 		 * edit_layers() AJAX request, retrieving a single layer.
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -261,11 +261,11 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-layer-updater.js's
 		 * edit_layers_submit() AJAX request, updating the ubcar_layer post.
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -279,7 +279,7 @@
 				if( get_current_user_id() != $edit_post->post_author && !current_user_can( 'edit_pages' ) ) {
 					echo 0;
 				} else {
-					$update_array = array( 
+					$update_array = array(
 						'ID' => sanitize_text_field( $_POST['ubcar_layer_edit_id'] ),
 						'post_title' => sanitize_text_field( $_POST['ubcar_layer_title'] ),
 						'post_content' => sanitize_text_field( $_POST['ubcar_layer_description'] )
@@ -292,5 +292,5 @@
 		}
 
 	}
-	
+
 ?>
