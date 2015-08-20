@@ -1,23 +1,24 @@
 jQuery( document ).ready(function() {
 
 	var requestedLatLng, mapOptions, map, ubcarMap;
-	
+
 	requestedLatLng = new google.maps.LatLng( 49.2683366, -123.2550359 );
 	mapOptions = {
 		zoom: 10,
 		center: requestedLatLng,
+		streetViewControl: false,
 		mapTypeId: google.maps.MapTypeId.SATELLITE
 	};
-	
+
 	map = new google.maps.Map( document.getElementById( 'ubcar-map-canvas' ), mapOptions );
-	
+
 	var ubcarMap = new UBCARMap( map );
-	
+
 	jQuery( '#ubcar-layers-form input' ).click(function() {
 		jQuery( '#ubcar-tours-form input' ).prop( 'checked', false );
 		ubcarMap.retrievePoints( jQuery( this ).attr( 'id' ), 'ubcar_layer' );
 	});
-	
+
 	jQuery( '#ubcar-tours-form input' ).click(function() {
 		jQuery( '#ubcar-layers-form input' ).prop( 'checked', false );
 		ubcarMap.retrievePoints( jQuery( this ).attr( 'id' ), 'ubcar_tour' );
@@ -28,7 +29,7 @@ jQuery( document ).ready(function() {
 		jQuery( '#ubcar-layers-form input' ).prop( 'checked', false );
 		ubcarMap.retrievePoints( escapeHTML( jQuery( '#ubcar-search-input' ).val() ), 'ubcar_search' );
 	});
-	
+
 	jQuery( '#ubcar-display-choice-map' ).click(function() {
 		jQuery( '#ubcar-map-canvas' ).show();
 		jQuery( '#ubcar-streetview-canvas' ).hide();
@@ -36,13 +37,13 @@ jQuery( document ).ready(function() {
 		jQuery( '#ubcar-display-choice-map' ).removeClass( 'ubcar-display-choice-map-move' );
 		jQuery( '#ubcar-display-choice-street' ).removeClass( 'ubcar-display-choice-street-move' );
 	});
-	
+
 	jQuery( '#ubcar-show-all' ).click(function() {
 		jQuery( '#ubcar-tours-form input' ).prop( 'checked', false );
 		jQuery( '#ubcar-layers-form input' ).prop( 'checked', false );
 		ubcarMap.retrievePoints( 0, 'all' );
 	});
-	
+
 	jQuery( '#ubcar-display-fullscreen' ).toggle(function() {
 		jQuery( 'body' ).prepend( jQuery( '.ubcar-content' ) );
 		jQuery( '.ubcar-content' ).css( 'position', 'fixed' );
@@ -61,22 +62,22 @@ jQuery( document ).ready(function() {
 		jQuery( '#ubcar-display-fullscreen' ).html( 'Fullscreen' );
 		jQuery( window ).scrollTop( jQuery( '.ubcar-content' ).offset().top - 40 );
 	});
-	
+
 	ubcarMap.requestDetector();
-	
+
 });
 
 function UBCARMap( map ) {
-	
+
 	var mapInstance, mapInfowindow, objectInstance, ubcarPoints, data, tempData;
-	
+
 	mapInstance = map
 	mapInfowindow = new google.maps.InfoWindow( { pixelOffset: new google.maps.Size( 0, -35 ) });
 	objectInstance = this;
 	ubcarPoints = []; // set of previously retrieved points
 	this.activeType = 'ubcar_layer'; // activeType shoudl be ubcar_layer, ubcar_tour, ubcar_search, or all
-	
-	
+
+
 	/**
 	 * AJAX call to class-ubcar-view-map.php's ubcar_get_aggregate_points(),
 	 * then displaying the points of the new layer, tour, search, or all
@@ -120,7 +121,7 @@ function UBCARMap( map ) {
 			}
 		}
 	}
-	
+
 	/**
 	 * Helper function to retrievePoints(), formatting the points and
 	 * putting them onto the displayed map.
@@ -128,9 +129,9 @@ function UBCARMap( map ) {
 	 * @param {String} aggregate_id - The object id ( id may be a search string ).
 	 */
 	this.displayPoints = function( aggregate_id ) {
-	
+
 		var anchor;
-	
+
 		ubcarPoints[ aggregate_id ].map_data.setMap( mapInstance );
 		ubcarPoints[ aggregate_id ].active = true;
 		if( ubcarPoints[ aggregate_id ].type != 'ubcar_search' ) {
@@ -153,7 +154,7 @@ function UBCARMap( map ) {
 			objectInstance.retrievePoint( event.feature.getProperty( 'id' ) );
 		});
 	}
-	
+
 	/**
 	 * Helper function to displayPoints(), displaying Google Maps
 	 * directions if an ubcar_tour is being displayed.
@@ -161,18 +162,18 @@ function UBCARMap( map ) {
 	 * @param {String} aggregate_id - The object id.
 	 */
 	this.displayRoute = function( aggregate_id ) {
-	
+
 		var coordinates, lastIndex;
-	
+
 		if( ubcarPoints[ aggregate_id ].raw_data.geojson != null ) {
 			if( ubcarPoints[ aggregate_id ].route_data == null ) {
-			
+
 				coordinates = ubcarPoints[ aggregate_id ].raw_data.geojson.features;
 				lastIndex = coordinates.length-1;
 				ubcarPoints[ aggregate_id ].route_data = [];
-			
+
 				objectInstance.retrieveRouteRecursive( aggregate_id, 0, lastIndex, coordinates );
-			
+
 			} else {
 				for( i in ubcarPoints[ aggregate_id ].route_data ) {
 					ubcarPoints[ aggregate_id ].route_data[ i ].setMap( mapInstance );
@@ -180,7 +181,7 @@ function UBCARMap( map ) {
 			}
 		}
 	}
-	
+
 	/**
 	 * Helper function to displayRoute(), retrieving Google Maps
 	 * directions. This function is recursively called in the Google
@@ -194,7 +195,7 @@ function UBCARMap( map ) {
 	 */
 	this.retrieveRouteRecursive = function( aggregate_id, start_index, lastIndex, coordinates ) {
 		var tempLastIndex, firstCoordinate, lastCoordinate, waypoints, tempLatlng, directionsDisplay, directionsService, request;
-		
+
 		var tempLastIndex = start_index + 9;
 		if( lastIndex <= tempLastIndex ) {
 			tempLastIndex = lastIndex;
@@ -228,7 +229,7 @@ function UBCARMap( map ) {
 			}
 		});
 	}
-	
+
 	/**
 	 * Helper function to retrievePoints(), removing an object
 	 * from the map.
@@ -247,7 +248,7 @@ function UBCARMap( map ) {
 		}
 		mapInfowindow.close();
 	}
-	
+
 	/**
 	 * AJAX call to class-ubcar-view-map.php's ubcar_get_aggregate_information(),
 	 * then displaying the information of the new layer or tour.
@@ -255,9 +256,9 @@ function UBCARMap( map ) {
 	 * @param {String} aggregate_id - The object id.
 	 */
 	this.retrieveAggregateInformation = function( aggregate_id ) {
-	
+
 		var data;
-	
+
 		if( aggregate_id != 'all_tours' && aggregate_id != 'all_layers' ) {
 			data = {
 				'action': 'ubcar_aggregate_information_retriever',
@@ -268,7 +269,7 @@ function UBCARMap( map ) {
 			});
 		}
 	}
-	
+
 	/**
 	 * Helper function to retrieveAggregateInformation(), formatting and
 	 * displaying the AJAX response.
@@ -276,9 +277,9 @@ function UBCARMap( map ) {
 	 * @param {Object} response - The AJAX response to display.
 	 */
 	this.displayAggregateInformation = function( response ) {
-		
+
 		var htmlString, pointID, latitude, longitude, myLatlng, maxZoomService;
-		
+
 		htmlString = '<div id="ubcar-aggregate-description-' + response.id + '">';
 		if( response.title != null ) {
 			htmlString += '<p><strong>' + response.title + ' (#' + response.id + ')</strong></p>';
@@ -304,17 +305,17 @@ function UBCARMap( map ) {
 			jQuery( '#ubcar-body-aggregate' ).append( htmlString );
 			jQuery( '#ubcar-header-aggregate' ).css( 'background', '#002145' );
 		}
-		
+
 		jQuery( document ).on( 'click', '#ubcar-aggregate-description-' + response.id + ' ol li', function() {
-			
+
 			jQuery( '#ubcar-body-aggregate > div ol li' ).css( 'background', 'white' );
 			jQuery( '#ubcar-aggregate-description-' + response.id + ' ol li' ).css( 'background', 'white' );
 			jQuery( this ).css( 'background', '#DEDEDE' );
 			jQuery( '#ubcar-body-aggregate' ).animate( {scrollTop: jQuery( this ).position().top + jQuery( '#ubcar-body-aggregate' ).scrollTop() - 20 }, 500, 'swing' );
-			
+
 			pointID = jQuery( this ).attr( 'id' ).replace( 'ubcar-aggregate-point-', '' );
 			objectInstance.retrievePoint( pointID );
-			
+
 			latitude = parseFloat( jQuery( this ).children( 'input[ name=latitude ]' ).val() );
 			longitude = parseFloat( jQuery( this ).children( 'input[ name=longitude ]' ).val() );
 			myLatlng = new google.maps.LatLng( latitude, longitude );
@@ -323,10 +324,10 @@ function UBCARMap( map ) {
 			maxZoomService.getMaxZoomAtLatLng( myLatlng, function( max_zoom ){
 				mapInstance.setZoom( max_zoom.zoom - 2 );
 			});
-			
+
 		});
 	}
-	
+
 	/**
 	 * Helper function to retrievePoints() and hidePoints(), removing
 	 * an object from the map.
@@ -343,7 +344,7 @@ function UBCARMap( map ) {
 			jQuery( '#ubcar-header-aggregate' ).css( 'background', '#DEDEDE' );
 		}
 	}
-	
+
 	/**
 	 * AJAX call to class-ubcar-view-map.php's ubcar_get_point_information()
 	 * and ubcar_get_point_comments(), then displaying the information of
@@ -352,9 +353,9 @@ function UBCARMap( map ) {
 	 * @param {String} pointID - The point id.
 	 */
 	this.retrievePoint = function( pointID ) {
-	
+
 		var data, tempLatlng;
-	
+
 		jQuery( '#ubcar-body-information' ).html( '<div class="ubcar-delay"></div>' );
 		jQuery( '#ubcar-body-media' ).html( '<div class="ubcar-delay"></div>' );
 		jQuery( '#ubcar-body-comments' ).html( '<div class="ubcar-delay"></div>' );
@@ -373,6 +374,10 @@ function UBCARMap( map ) {
 			objectInstance.displayPointInformation( response );
 			if( response.logged_in === true ) {
 				jQuery( '#ubcar-header-comments-submit' ).css( 'background', '#002145' );
+				jQuery( '#ubcar-header-media-submit' ).css( 'background', '#002145' );
+			} else {
+				jQuery( '#ubcar-header-comments-submit' ).unbind( 'click' );
+				jQuery( '#ubcar-header-media-submit' ).unbind( 'click' );
 			}
 			tempLatlng = new google.maps.LatLng( response.point_latitude, response.point_longitude );
 			objectInstance.displayStreetview( pointID, tempLatlng, map );
@@ -384,8 +389,15 @@ function UBCARMap( map ) {
 		jQuery.post( ajax_object.ajax_url, data, function( response ) {
 			objectInstance.displayPointComments( response, pointID );
 		});
+		data = {
+			'action': 'ubcar_point_media_submit_retriever',
+			'ubcar_point_id': pointID
+		};
+		jQuery.post( ajax_object.ajax_url, data, function( response ) {
+			objectInstance.displayMediaSubmit( response );
+		});
 	}
-	
+
 	/**
 	 * Helper function to retrievePoint(), formatting and
 	 * displaying the AJAX response ( point information ).
@@ -476,10 +488,10 @@ function UBCARMap( map ) {
 				jQuery( '#ubcar-body-media' ).hide();
 			}
 		}
-		
+
 		jQuery( '#ubcar-body-information' ).html( htmlStringDescription );
 		jQuery( '#ubcar-body-media' ).html( htmlStringMedia );
-		
+
 		jQuery( '.ubcar-wiki-header' ).click(function() {
 			wikiID = jQuery( this ).attr( 'id' ).replace( 'ubcar-wiki-header-', '' );
 			if( jQuery( '#ubcar-wiki-body-' + wikiID ).css( 'display' ) === 'none' ) {
@@ -504,7 +516,7 @@ function UBCARMap( map ) {
 			}
 		});
 	}
-	
+
 	/**
 	 * Helper function to retrievePoint(), submitNewComment(), and
 	 * submitNewReply(), formatting and displaying the AJAX
@@ -514,9 +526,9 @@ function UBCARMap( map ) {
 	 * @param {String} pointID - The point id.
 	 */
 	this.displayPointComments = function( response, pointID ) {
-	
+
 		var editID, htmlString, parentID;
-	
+
 		if( response != '<ol class="commentlist"></ol>' && response != '0' ) {
 			jQuery( '#ubcar-header-comments' ).css( 'background', '#002145' );
 			jQuery( '#ubcar-body-comments' ).html( response );
@@ -524,27 +536,27 @@ function UBCARMap( map ) {
 			jQuery( '#ubcar-body-comments' ).html( '' );
 			jQuery( '#ubcar-body-comments' ).hide();
 		}
-		
+
 		jQuery( '#ubcar-body-comments-submit' ).html( '<textarea rows="4" id="ubcar-new-comment-text"></textarea><br /><div class="ubcar-button" id="ubcar-new-comment-submit">Submit New Comment</div>' );
-		
+
 		jQuery( '[ id^=ubcar-comment-reply- ]' ).click(function() {
 			jQuery( this ).hide();
 			editID = jQuery( this ).attr( 'id' ).replace( 'ubcar-comment-reply-', '' );
 			htmlString = '<textarea rows="4" id="ubcar-comment-reply-text-' + editID + '"></textarea>';
 			htmlString += '<div class="ubcar-button" id="ubcar-comment-submit-reply-' + editID + '">Submit Reply</div>';
 			jQuery( '#ubcar-reply-area-' + editID ).html( htmlString );
-			
+
 			jQuery( '[ id^=ubcar-comment-submit-reply- ]' ).unbind( 'click' ).click(function() {
 				parentID = jQuery( this ).attr( 'id' ).replace( 'ubcar-comment-submit-reply-', '' );
 				objectInstance.submitNewReply( pointID, parentID );
 			});
 		});
-		
+
 		jQuery( '#ubcar-new-comment-submit' ).click(function() {
 			objectInstance.submitNewComment( pointID );
 		});
 	}
-	
+
 	/**
 	 * AJAX call to class-ubcar-view-map.php's ubcar_submit_comment(),
 	 * then displaying the retrieved comments.
@@ -570,7 +582,7 @@ function UBCARMap( map ) {
 		});
 		jQuery( '#ubcar-body-comments-submit' ).html( '<div class="ubcar-delay"></div>' );
 	}
-	
+
 	/**
 	 * AJAX call to class-ubcar-view-map.php's ubcar_submit_reply(),
 	 * then displaying the retrieved comments.
@@ -597,7 +609,79 @@ function UBCARMap( map ) {
 			});;
 		});
 	}
-	
+
+	/**
+	 * AJAX call to class-ubcar-view-map.php's ubcar_get_point_media_submit(),
+	 * displaying the frontend media submit button.
+	 *
+	 * @param {Object} response - The AJAX response to display.
+	 * @param {String} pointID - The point id.
+	 */
+	this.displayMediaSubmit = function( response ) {
+
+		jQuery( '#ubcar-body-media-submit' ).html( response );
+
+		jQuery( '#ubcar-media-type' ).change(function() {
+			switch( this.value ) {
+				case 'image':
+					jQuery( '.ubcar-add-media-image' ).show();
+					jQuery( '.ubcar-add-media-video' ).hide();
+					jQuery( '.ubcar-add-media-audio' ).hide();
+					jQuery( '.ubcar-add-media-imagewp' ).hide();
+					jQuery( '.ubcar-add-media-external' ).hide();
+					jQuery( '.ubcar-add-media-wiki' ).hide();
+					jQuery( '#ubcar-media-wiki-warning' ).hide();
+					break;
+				case 'audio':
+					jQuery( '.ubcar-add-media-image' ).hide();
+					jQuery( '.ubcar-add-media-video' ).hide();
+					jQuery( '.ubcar-add-media-audio' ).show();
+					jQuery( '.ubcar-add-media-imagewp' ).hide();
+					jQuery( '.ubcar-add-media-external' ).hide();
+					jQuery( '.ubcar-add-media-wiki' ).hide();
+					jQuery( '#ubcar-media-wiki-warning' ).hide();
+					break;
+				case 'video':
+					jQuery( '.ubcar-add-media-image' ).hide();
+					jQuery( '.ubcar-add-media-video' ).show();
+					jQuery( '.ubcar-add-media-audio' ).hide();
+					jQuery( '.ubcar-add-media-imagewp' ).hide();
+					jQuery( '.ubcar-add-media-external' ).hide();
+					jQuery( '.ubcar-add-media-wiki' ).hide();
+					jQuery( '#ubcar-media-wiki-warning' ).hide();
+					break;
+				case 'imagewp':
+					jQuery( '.ubcar-add-media-image' ).hide();
+					jQuery( '.ubcar-add-media-video' ).hide();
+					jQuery( '.ubcar-add-media-audio' ).hide();
+					jQuery( '.ubcar-add-media-imagewp' ).show();
+					jQuery( '.ubcar-add-media-external' ).hide();
+					jQuery( '.ubcar-add-media-wiki' ).hide();
+					jQuery( '#ubcar-media-wiki-warning' ).hide();
+					break;
+				case 'external':
+					jQuery( '.ubcar-add-media-image' ).hide();
+					jQuery( '.ubcar-add-media-video' ).hide();
+					jQuery( '.ubcar-add-media-audio' ).hide();
+					jQuery( '.ubcar-add-media-imagewp' ).hide();
+					jQuery( '.ubcar-add-media-external' ).show();
+					jQuery( '.ubcar-add-media-wiki' ).hide();
+					jQuery( '#ubcar-media-wiki-warning' ).hide();
+					break;
+				case 'wiki':
+					jQuery( '.ubcar-add-media-image' ).hide();
+					jQuery( '.ubcar-add-media-video' ).hide();
+					jQuery( '.ubcar-add-media-audio' ).hide();
+					jQuery( '.ubcar-add-media-imagewp' ).hide();
+					jQuery( '.ubcar-add-media-external' ).hide();
+					jQuery( '.ubcar-add-media-wiki' ).show();
+					jQuery( '#ubcar-media-wiki-warning' ).show();
+					break;
+			}
+		});
+
+	}
+
 	/**
 	 * Helper function to retrievePoint(), testing if a streetview
 	 * is available for a certain point.
@@ -611,7 +695,7 @@ function UBCARMap( map ) {
 			objectInstance.displayStreetviewTest( pointID, data, status, latlng_object );
 		});
 	}
-	
+
 	/**
 	 * Helper function to displayStreetview(), testing if a streetview
 	 * is available for a certain point and allowing the option to
@@ -623,9 +707,9 @@ function UBCARMap( map ) {
 	 * @param {Object} latlng_object - The latlng object with the coordinates of the point.
 	 */
 	this.displayStreetviewTest = function( pointID, data, status, latlng_object ) {
-	
+
 		var streetviewOptions, streetview;
-	
+
 		if ( status === google.maps.StreetViewStatus.OK ) {
 			jQuery( '#ubcar-display-choice-street' ).css( 'background', '#002145' );
 			jQuery( '#ubcar-display-choice-street' ).click(function() {
@@ -641,15 +725,15 @@ function UBCARMap( map ) {
 			});
 		}
 	}
-	
+
 	/**
 	 * Helper function to displayPoints() and hidePoints(),
 	 * resizing the map if necessary.
 	 */
 	this.resizeMap = function() {
-	
+
 		var mapBounds, tempSW, tempNE, tempBounds;
-	
+
 		mapBounds = new google.maps.LatLngBounds();
 		for( i in ubcarPoints ) {
 			if( ubcarPoints[ i ].active === true && ubcarPoints[ i ].raw_data.geojson_bounds != null ) {
@@ -664,16 +748,16 @@ function UBCARMap( map ) {
 			}
 		}
 	}
-	
+
 	/**
 	 * Function to detect and respond to hidden input fields used
 	 * to communicate a user's GET request for a specific point,
 	 * tour, or layer.
 	 */
 	this.requestDetector = function() {
-	
+
 		var requestedType, requestedValue, requestedLatitude, requestedLongitude, requestedLatLng, maxZoomService;
-	
+
 		requestedType = jQuery( '#ubcar-hidden-request-type' ).val();
 		requestedValue = jQuery( '#ubcar-hidden-request-value' ).val();
 		if( requestedType != null && requestedValue != null ) {
@@ -704,7 +788,7 @@ function UBCARMap( map ) {
 			objectInstance.retrievePoints( 0, 'all' );
 		}
 	}
-	
+
 }
 
 // bad variables used for XSS

@@ -29,6 +29,7 @@
 #ubcar-body-media,
 #ubcar-body-comments,
 #ubcar-body-comments-submit,
+#ubcar-body-media-submit,
 #ubcar-accordion-body-layers,
 #ubcar-accordion-body-tours,
 #ubcar-streetview-canvas,
@@ -197,7 +198,8 @@ ol.commentlist {
 }
 
 #ubcar-body-comments,
-#ubcar-body-aggregate {
+#ubcar-body-aggregate,
+#ubcar-body-media-submit {
 	max-height: 220px;
 }
 
@@ -259,6 +261,10 @@ ol.commentlist {
 #ubcar-navigation-information {
 	max-height: 500px;
 	overflow: auto;
+}
+
+.form-table {
+	max-width: 100%;
 }
 
 @media only screen and (max-width:750px) {

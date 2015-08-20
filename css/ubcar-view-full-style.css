@@ -6,7 +6,7 @@
 		padding-right: 0px;
 		padding-bottom: 0px;
 	}
-	
+
 	.ubcar-content {
 		height: 800px;
 		position: relative;
@@ -20,7 +20,7 @@
 		border-color: #002145;
 		z-index: 0;
 	}
-	
+
 	.ubcar-accordion-header,
 	.ubcar-header {
 		width: 80px;
@@ -28,86 +28,93 @@
 		border: 1px solid white;
 		position: absolute;
 	}
-	
+
 	#ubcar-accordion-header-layers {
 		left: 5px;
 		bottom: 85px;
 	}
-	
+
 	#ubcar-accordion-header-tours {
 		left: 90px;
 		bottom: 85px;
 	}
-	
+
 	#ubcar-title-search {
 		width: 250px;
 		left: 5px;
 		bottom: 40px;
 		overflow: hidden;
 	}
-	
+
 	#ubcar-display-fullscreen {
 		display: block;
 		background: #002145;
 	}
-	
+
 	#ubcar-search-input {
 		width: 150px;
 		height: 25px;
 		z-index: 222222;
 		vertical-align: middle;
 	}
-	
+
 	#ubcar-search-button {
 		width: 80px;
 		height: 27px;
 	}
-	
+
 	#ubcar-show-all {
 		left: 175px;
 		bottom: 85px;
 	}
-	
+
 	#ubcar-header-aggregate {
+		right: 10px;
+		bottom: 265px;
+		font-size: 12px;
+		padding: 0px;
+	}
+
+	#ubcar-header-information {
 		right: 10px;
 		bottom: 220px;
 		font-size: 12px;
 		padding: 0px;
 	}
-	
-	#ubcar-header-information {
+
+	#ubcar-header-media {
 		right: 10px;
 		bottom: 175px;
 		font-size: 12px;
 		padding: 0px;
 	}
-	
-	#ubcar-header-media {
+
+	#ubcar-header-comments {
 		right: 10px;
 		bottom: 130px;
 		font-size: 12px;
 		padding: 0px;
 	}
-	
-	#ubcar-header-comments {
+
+	#ubcar-header-comments-submit {
 		right: 10px;
 		bottom: 85px;
 		font-size: 12px;
 		padding: 0px;
 	}
-	
-	#ubcar-header-comments-submit {
+
+	#ubcar-header-media-submit {
 		right: 10px;
 		bottom: 40px;
 		font-size: 12px;
 		padding: 0px;
 	}
-	
+
 	#ubcar-display-fullscreen {
 		right: 10px;
 		top: 80px;
 	}
-	
+
 	#ubcar-display-choice-map {
 		right: 10px;
 		top: 125px;
@@ -139,7 +146,7 @@
 		border-radius: 5px 5px 5px 5px;
 		background: white;
 	}
-	
+
 	#ubcar-accordion-body-tours {
 		position: absolute;
 		left: 5px;
@@ -149,7 +156,7 @@
 		border-radius: 5px 5px 5px 5px;
 		background: white;
 	}
-	
+
 	.ubcar-body {
 		position: absolute;
 		right: 95px;

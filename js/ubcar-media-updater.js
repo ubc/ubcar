@@ -1,5 +1,5 @@
 jQuery( document ).ready(function( $ ) {
-	
+
 	var data = {
 		'action' : 'media_initial',
 		'ubcar_media_offset' : escapeHTML( jQuery( '#ubcar_media_display_count' ).val() ),
@@ -12,7 +12,7 @@ jQuery( document ).ready(function( $ ) {
 		}
 		jQuery( '#ubcar-media-back' ).hide();
 	});
-	
+
 	jQuery( '#ubcar-media-type' ).change(function() {
 		switch( this.value ) {
 			case 'image':
@@ -71,21 +71,21 @@ jQuery( document ).ready(function( $ ) {
 				break;
 		}
 	});
-	
+
 	// ubcar media forward
 	jQuery( '#ubcar-media-forward' ).click(function() {
 		forwardMedias();
 	});
-	
+
 	// ubcar media backward
 	jQuery( '#ubcar-media-back' ).click(function() {
 		backwardMedias();
 	});
-	
+
 	jQuery( '[ id^=ubcar-media-delete- ]' ).click(function() {
 		deleteMedias();
 	});
-	
+
 });
 
 /**
@@ -93,9 +93,9 @@ jQuery( document ).ready(function( $ ) {
  * incrementing the displayed ubcar_medium posts
  */
 function forwardMedias() {
-	
+
 	var data, currentPage;
-	
+
 	data = {
 		'action' : 'media_forward',
 		'ubcar_media_offset' : escapeHTML( jQuery( '#ubcar-media-display-count' ).html() ),
@@ -119,9 +119,9 @@ function forwardMedias() {
  * decrementing the displayed ubcar_medium posts
  */
 function backwardMedias() {
-	
+
 	var data, currentPage;
-	
+
 	data = {
 		'action' : 'media_backward',
 		'ubcar_media_offset' : escapeHTML( jQuery( '#ubcar-media-display-count' ).html() ),
@@ -141,7 +141,7 @@ function backwardMedias() {
 /**
  * AJAX call to class-ubcar-admin-medium.php's ubcar_media_delete(), deleting
  * the selected ubcar_medium post.
- * 
+ *
  * @param {Number} deleteID
  */
 function deleteMedias( deleteID ) {
@@ -174,13 +174,13 @@ function deleteMedias( deleteID ) {
 
 /**
  * Helper function to display retrieved ubcar_medium posts data.
- * 
+ *
  * @param {Object[]} response JSON object of ubcar_medium posts' data
  */
 function displayMedias( response ) {
-	
+
 	if( Object.prototype.toString.call( response ) === '[object Array]' ) {
-	
+
 		var htmlString, deleteID, editID;
 
 		htmlString = '<tr><td>ID</td><td>Preview</td><td>Title</td><td>Uploader</td><td>Date Uploaded</td><td>Description</td><td>Location</td><td>Layers</td><td>Hide?</td><td>Action</td></tr>';
@@ -238,15 +238,15 @@ function displayMedias( response ) {
 		}
 	jQuery( '#ubcar-media-table' ).html( htmlString );
 	} else {
-		alert( 'An UBCAR error has occurred! Please log out and back in.' );
+		// alert( 'An UBCAR error has occurred! Please log out and back in.' );
 	}
-	
-	
+
+
 	jQuery( '[ id^=ubcar-media-delete- ]' ).click(function() {
 		deleteID = jQuery( this ).attr( 'id' ).replace( 'ubcar-media-delete-', '' );
 		deleteMedias( deleteID );
 	});
-	
+
 	jQuery( '[ id^=ubcar-media-edit- ]' ).click(function() {
 		editID = jQuery( this ).attr( 'id' ).replace( 'ubcar-media-edit-', '' );
 		editMedias( editID );
@@ -256,11 +256,11 @@ function displayMedias( response ) {
 /**
  * AJAX call to class-ubcar-admin-medium.php's ubcar_media_edit(), retrieving an
  * ubcar_medium post's data and formatting it for editing.
- * 
+ *
  * @param {Number} editID
  */
 function editMedias( editID ) {
-	
+
 	var data, htmlString, selectedLayers;
 
 	data = {
@@ -272,9 +272,9 @@ function editMedias( editID ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have permission to edit that media.' );
 		} else {
-		
+
 			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
-		
+
 				htmlString = '<td>';
 				htmlString += response.ID;
 				htmlString += '</td><td style="text-align: center">';
@@ -355,7 +355,7 @@ function editMedias( editID ) {
 /**
  * AJAX call to class-ubcar-admin-medium.php's ubcar_media_edit_submit(),
  * submitting an ubcar_medium post's edited information and displaying it
- * 
+ *
  * @param {Number} thisthis The unique div of the post to be submitted
  */
 function editMediasSubmit( thisthis, old_selectedLayers, old_location ) {
@@ -408,9 +408,9 @@ function editMediasSubmit( thisthis, old_selectedLayers, old_location ) {
 		if( response === false ) {
 			alert( 'Sorry, you do not have permission to delete that media.' );
 		} else {
-		
+
 			if( Object.prototype.toString.call( response ) === '[object Object]' ) {
-		
+
 				htmlString = '<td>';
 				htmlString += response.ID;
 				htmlString += '</td><td style="text-align: center">';

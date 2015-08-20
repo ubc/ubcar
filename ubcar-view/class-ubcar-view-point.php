@@ -165,7 +165,7 @@
                       <?php
                         $gallery_images = get_posts( array( 'posts_per_page' => -1, 'order' => 'ASC', 'post_type' => 'attachment', 'post_mime_type' => 'image/png, image/jpeg' ) );
                         foreach( $gallery_images as $gallery_image ) {
-
+                            echo '<option value="' . $gallery_image->ID. '">' . $this->ubcar_media_data_cleaner( $gallery_image->post_title ) . ' ( #' . $gallery_image->ID . ' )</option>';
                         }
                       ?>
                     </select>

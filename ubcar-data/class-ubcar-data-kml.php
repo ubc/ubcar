@@ -111,9 +111,25 @@
 		function ubcar_download_kml_body() {
 			echo '<?xml version="1.0" encoding="utf-8"?>';
 			echo "\n";
-			echo '<kml xmlns="http://www.opengis.net/kml/2.2">';
+			echo '<kml xmlns="http://www.opengis.net/kml/2.2"';
+			echo "\n";
+			echo 'xmlns:ar="http://www.openarml.org/arml/1.0"';
+			echo "\n";
+			echo 'xmlns:wikitude="http://www.openarml.org/wikitude/1.0">';
 			echo "\n";
 			echo '	  <Document>';
+			echo "\n";
+			echo '	  	  <ar:provider id="UBCAR">';
+			echo "\n";
+			echo '	  	  	  <ar:name>UBCAR Test Points</ar:name>';
+			echo "\n";
+			echo '	  	  	  <ar:description>UBCAR sample points</ar:description>';
+			echo "\n";
+			echo '	  	  	  <wikitude:providerUrl>http://www.sidl.es/</wikitude:providerUrl>';
+			echo "\n";
+			echo '	  	  	  <wikitude:logo>http://localhost/layar/wp-content/uploads/2015/04/Eagle.jpg</wikitude:logo>';
+			echo "\n";
+			echo '	   	  </ar:provider>';
 			echo "\n";
 			$this->ubcar_download_kml_body_points();
 			echo '	  </Document>';
@@ -130,13 +146,26 @@
 		 */
 		function ubcar_download_kml_body_points() {
 			$ubcar_points = $this->ubcar_retrieve_points();
+			$temp_counter = 0;
 			foreach( $ubcar_points as $ubcar_point ) {
 				if( !( $ubcar_point['longitude'] == 0 && $ubcar_point['longitude'] == 0 ) ) {
-					echo "		  <Placemark>";
+					echo '		  <Placemark id="' . $temp_counter . '">';
 					echo "\n";
-					echo "			  <name>" . htmlspecialchars( $ubcar_point['title'] ) . " ( Point " . htmlspecialchars( $ubcar_point['ID'] ) . " ) </name>";
+					echo "			  <ar:provider>UBCAR</ar:provider>";
 					echo "\n";
-					echo "			  <description>" . number_format( ( int )$ubcar_point['ID'] ) . "</description>";
+					echo "			  <name>" . htmlspecialchars( $ubcar_point['title'] ) . " (Point " . htmlspecialchars( $ubcar_point['ID'] ) . ")</name>";
+					echo "\n";
+//					echo "			  <point_id>" . number_format( ( int )$ubcar_point['ID'] ) . "</point_id>";
+//					echo "\n";
+					echo "			  <description>" . $ubcar_point['description'] . "</description>";
+					echo "\n";
+					echo "			  <wikitude:info>";
+					echo "\n";
+					if( array_key_exists( 'thumbnail', $ubcar_point ) ) {
+						echo "			  <wikitude:thumbnail>" . $ubcar_point['thumbnail'] . "</wikitude:thumbnail>";
+						echo "\n";
+					}
+					echo "			  </wikitude:info>";
 					echo "\n";
 					echo "			  <Point>";
 					echo "\n";
@@ -147,6 +176,7 @@
 					echo "		  </Placemark>";
 					echo "\n";
 				}
+				$temp_counter++;
 			}
 		}
 
@@ -223,6 +253,18 @@
 					$temp_inner_array['title'] = $temp_point->post_title;
 					$temp_inner_array['longitude'] = get_post_meta( $temp_point->ID, 'ubcar_point_longitude', true );
 					$temp_inner_array['latitude'] = get_post_meta( $temp_point->ID, 'ubcar_point_latitude', true );
+					$temp_inner_array['description'] = $temp_point->post_content;
+					$temp_thumbnails = get_post_meta( $temp_point->ID, 'ubcar_point_media', true );
+					if( !empty( $temp_thumbnails ) ) {
+						$temp_media_meta = get_post_meta( $temp_thumbnails[0], 'ubcar_media_meta', true );
+						if( $temp_media_meta != "" ) {
+							$temp_media_type = $temp_media_meta['type'];
+							if( $temp_media_type == 'image' ) {
+								$temp_media_url = wp_get_attachment_url( $temp_media_meta['url'] );
+								$temp_inner_array['thumbnail'] = $temp_media_url;
+							}
+						}
+					}
 					array_push( $ubcar_points, $temp_inner_array );
 				}
 			}

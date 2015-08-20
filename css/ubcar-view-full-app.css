@@ -4,6 +4,12 @@
     right: 0;
     bottom: 0;
     position: absolute;
+    z-index: 1000000000;
+    background: white;
+}
+
+body {
+    overflow: hidden !important;
 }
 
 #page, #page * {
@@ -12,6 +18,7 @@
 
 .ubcar-informational-right-column {
     width: 100%;
+    padding-right: 5px;
 }
 
 .ubcar-header {

@@ -48,11 +48,13 @@
 			add_action( 'wp_ajax_ubcar_point_information_retriever', array( $this, 'ubcar_get_point_information' ) );
 			add_action( 'wp_ajax_nopriv_ubcar_point_comments_retriever', array( $this, 'ubcar_get_point_comments' ) );
 			add_action( 'wp_ajax_ubcar_point_comments_retriever', array( $this, 'ubcar_get_point_comments' ) );
+			add_action( 'wp_ajax_nopriv_ubcar_point_media_submit_retriever', array( $this, 'ubcar_get_point_media_submit' ) );
+			add_action( 'wp_ajax_ubcar_point_media_submit_retriever', array( $this, 'ubcar_get_point_media_submit' ) );
 			add_action( 'wp_ajax_nopriv_ubcar_wiki_page', array( $this, 'ubcar_get_wiki_page' ) );
 			add_action( 'wp_ajax_ubcar_wiki_page', array( $this, 'ubcar_get_wiki_page' ) );
 			add_action( 'wp_ajax_ubcar_submit_comment', array( $this, 'ubcar_submit_comment' ) );
 			add_action( 'wp_ajax_ubcar_submit_reply', array( $this, 'ubcar_submit_reply' ) );
-
+			add_action( 'wp', array( $this, 'ubcar_media_data_handler' ) );
 		}
 
 		/**
@@ -72,13 +74,18 @@
 		 * @return void
 		 */
 		function add_scripts() {
-			wp_enqueue_script( 'ubcar_map_display_google_script', 'https://maps.googleapis.com/maps/api/js?v=3.exp&key=' . get_option( 'ubcar_google_maps_api_key' ) );
+			wp_enqueue_script( 'ubcar_map_display_google_script', 'https://maps.googleapis.com/maps/api/js?v=3.exp&key=' . get_option( 'ubcar_google_maps_api_key' ), array( 'jquery' ) );
 			wp_register_script( 'ubcar_map_display_toggles_script', plugins_url( 'js/ubcar-map-view-toggles.js', dirname( __FILE__ ) ) );
 			wp_register_script( 'ubcar_map_display_script', plugins_url( 'js/ubcar-map-view.js', dirname( __FILE__ ) ) );
 			wp_enqueue_script( 'ubcar_map_display_toggles_script', array( 'jquery' ) );
 			wp_enqueue_script( 'ubcar_map_display_script', array( 'jquery', 'ubcar_map_display_toggles_script' ) );
 			wp_enqueue_script( 'jquery-effects-drop', array( 'jquery' ) );
 			wp_localize_script( 'ubcar_map_display_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+			wp_register_script( 'ubcar_control_panel_media_updater_script', plugins_url( 'js/ubcar-media-updater.js', dirname( __FILE__ ) ) );
+			wp_enqueue_script( 'ubcar_control_panel_media_updater_script', array( 'jquery', 'ubcar_control_panel_script' ) );
+			wp_localize_script( 'ubcar_control_panel_media_updater_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+			wp_register_style( 'ubcar_control_panel_style', plugins_url( '/css/ubcar-admin-style.css', dirname( __FILE__ ) ) );
+			wp_enqueue_style( 'ubcar_control_panel_style' );
 		}
 
 		/**
@@ -185,6 +192,8 @@
 					<div class="ubcar-body" id="ubcar-body-comments"></div>
 					<div class="ubcar-header" id="ubcar-header-comments-submit">Submit New Comment</div>
 					<div class="ubcar-body" id="ubcar-body-comments-submit"></div>
+					<div class="ubcar-header" id="ubcar-header-media-submit">Submit New Media</div>
+		            <div class="ubcar-body" id="ubcar-body-media-submit"></div>
 				</div>
 			</div>
 		<?php
@@ -553,6 +562,143 @@
 			die();
 		}
 
+		/**
+		 * This is the callback function for ubcar-map-view.js's media_submit()
+		 * AJAX request, retrieving the ability to submit media for a single
+		 * ubcar_point.
+		 *
+		 * @access public
+		 * @return void
+		 */
+		function ubcar_get_point_media_submit() {
+
+			$ubcar_layers = get_posts( array( 'posts_per_page' => -1, 'order' => 'ASC', 'post_type' => 'ubcar_layer' ) );
+			$ubcar_tours = get_posts( array( 'posts_per_page' => -1, 'order' => 'ASC', 'post_type' => 'ubcar_tour' ) );
+
+			?><form method="POST" action="" style="width: 100%;" id="ubcar-add-new-form" enctype="multipart/form-data">
+              <?php
+                wp_nonce_field( 'ubcar_nonce_check','ubcar-nonce-field' );
+              ?>
+              <table class="form-table">
+                <tr>
+                  <th scope="row"><label for="ubcar-media-type">Type</label></th>
+                  <td>
+                    <select id="ubcar-media-type" name="ubcar-media-type" class="">
+                      <option value="image">Image from Computer</option>
+                      <option value="imagewp">Image from Gallery</option>
+                      <option value="video">Video</option>
+                      <option value="audio">Audio</option>
+                      <option value="external">External Site Link</option>
+                      <?php
+                      if( current_user_can( 'edit_pages' ) ) {
+                        echo '<option value="wiki">Wiki Page</option>';
+                      }
+                      ?>
+                    </select>
+                  </td>
+                </tr>
+                <tr class="ubcar-add-media-image">
+                  <th scope="row"><label for="ubcar-media-upload">Image Upload</label></th>
+                  <td><input name="ubcar-media-upload" type="file" id="ubcar-media-upload" class="regular-text ltr" multiple="false" /></td>
+                </tr>
+                <tr class="ubcar-add-media-imagewp">
+                  <th scope="row"><label for="ubcar-media">WordPress Gallery #</label></th>
+                  <td>
+                    <select id="ubcar-wp-image-url" name="ubcar-wp-image-url">
+                      <?php
+                        $gallery_images = get_posts( array( 'posts_per_page' => -1, 'order' => 'ASC', 'post_type' => 'attachment', 'post_mime_type' => 'image/png, image/jpeg' ) );
+                        foreach( $gallery_images as $gallery_image ) {
+							echo '<option value="' . $gallery_image->ID. '">' . $this->ubcar_media_data_cleaner( $gallery_image->post_title ) . ' ( #' . $gallery_image->ID . ' )</option>';
+                        }
+                      ?>
+                    </select>
+                  </td>
+                </tr>
+                <tr class="ubcar-add-media-external">
+                  <th scope="row"><label for="ubcar-external">External Web Address</label></th>
+                  <td><input name="ubcar-external-url" type="text" id="ubcar-external-url" value="" class="regular-text ltr" /></td>
+                </tr>
+                <tr class="ubcar-add-media-wiki">
+                  <th scope="row"><label for="ubcar-wiki">Wiki Page URL</label></th>
+                  <td><input name="ubcar-wiki-url" type="text" id="ubcar-wiki-url" value="" class="regular-text ltr" /></td>
+                </tr>
+                <tr class="ubcar-add-media-video">
+                  <th scope="row"><label for="ubcar-video-type">Video Type</label></th>
+                  <td>
+                    <select id="ubcar-video-type" name="ubcar-video-type" class="">
+                      <option value="youtube">YouTube</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr class="ubcar-add-media-video">
+                  <th scope="row"><label for="ubcar-video-url">Video ID</label></th>
+                  <td>
+                    <input name="ubcar-video-url" type="text" id="ubcar-video-url" value="" class="regular-text ltr" />
+                    <div id="ubcar-video-explainer">Insert only the video ID ( as highlighted ): <span style="color:grey;">https://www.youtube.com/watch?v=</span><span style="background:red;">ZQVehnkc68M</span></div>
+                  </td>
+                </tr>
+                <tr class="ubcar-add-media-audio">
+                  <th scope="row"><label for="ubcar-audio-type">Audio Type</label></th>
+                  <td>
+                    <select id="ubcar-audio-type" name="ubcar-audio-type" class="">
+                      <option value="soundcloud">SoundCloud</option>
+                    </select>
+                    <div id="ubcar-audio-explainer">Insert only the audio ID ( as highlighted ): <span style="color:grey;">&lt;iframe width=&quot;100%&quot; height=&quot;450&quot; scrolling=&quot;no&quot; frameborder=&quot;no&quot; <br />src=&quot;https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/</span><span style="background:red">138550276</span><br /><span style="color:grey">&amp;amp;auto_play=false&amp;amp;hide_related=false&amp;amp;show_comments=true&amp;amp;show_user=true<br />&amp;amp;show_reposts=false&amp;amp;visual=true&quot;&gt;&lt;/iframe&gt;</span></div>
+                  </td>
+                </tr>
+                <tr class="ubcar-add-media-audio">
+                  <th scope="row"><label for="ubcar-audio-url">SoundCloud ID#</label></th>
+                  <td><input name="ubcar-audio-url" type="text" id="ubcar-audio-url" value="" class="regular-text ltr" /></td>
+                </tr>
+                <tr>
+                  <th scope="row"><label for="ubcar-media-title">Media Title</label></th>
+                  <td><input name="ubcar-media-title" type="text" id="ubcar-media-title" value="" class="regular-text ltr" /></td>
+                </tr>
+                <tr>
+                  <th scope="row"><label for="ubcar-media-description">Media Description Text</label><br /><span id="ubcar-media-wiki-warning">( n/a for Wiki Pages )</span></th>
+                  <td>
+                    <textarea name="ubcar-media-description" rows="5" type="textfield" id="ubcar-media-description" value="" class="regular-text ltr" /></textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row"><label for="ubcar-media-layers">Associated Layers</label></th>
+                  <td><select multiple name="ubcar-media-layers[]" id="ubcar-media-layers[]" size="10">
+                    <?php
+                      foreach ( $ubcar_layers as $ubcar_layer ) {
+                        $ubcar_layer_password = get_post_meta( $ubcar_layer->ID, 'ubcar_password', true );
+                        if( $ubcar_layer_password == 'false' || $ubcar_layer_password == '' || current_user_can( 'edit_pages' ) ) {
+                          echo '<option value="' . $ubcar_layer->ID . '">' . $ubcar_layer->post_title . ' ( #' . $ubcar_layer->ID . ' )</option>';
+                        }
+                      }
+                    ?>
+                  </select></td>
+                </tr>
+                <tr>
+                  <th scope="row"><label for="ubcar-media-visibility">Hidden</label></th>
+                  <td><input name="ubcar-media-visibility" type="checkbox" id="ubcar-media-visibility" /></td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <?php echo '<input type="hidden" value="' . $_POST['ubcar_point_id'] . '" id="ubcar-hidden-request-location" name="ubcar-hidden-request-location">'; ?>
+                    <input class="button button-primary" name="ubcar-media-submit" id="ubcar-media-submit" type="submit" value="Upload">
+                  </th>
+                </tr>
+              </table>
+            </form>
+            <hr />
+            <?php
+              if( isset( $_GET['load'] ) && $_GET['load'] == 'failure' ) {
+                ?>
+                  <h3>Image failed to load or no image selected. Please try again.</h3>
+                  <hr />
+                <?php
+              }
+            ?>
+          </div>
+		  <?php
+			die();
+		}
+
 		 /**
 		 * This is the helper function for retrieving an ubcar_media datum from
 		 * the database.
@@ -600,6 +746,97 @@
 			$tempArray["layers"] = $ubcar_media_layer_names;
 			return $tempArray;
 		}
+
+		function ubcar_media_data_handler() {
+				global $wpdb;
+				if( isset( $_POST['ubcar-nonce-field'] ) && isset( $_POST['ubcar-media-type'] ) ) {
+					if ( !isset( $_POST['ubcar-nonce-field'] ) || !wp_verify_nonce( $_POST['ubcar-nonce-field'],'ubcar_nonce_check' ) ) {
+						die();
+					} else {
+						require_once( ABSPATH . 'wp-admin/includes/image.php' );
+						require_once( ABSPATH . 'wp-admin/includes/file.php' );
+						require_once( ABSPATH . 'wp-admin/includes/media.php' );
+						$ubcar_url = "";
+						$ubcar_media_post_meta = array();
+						$ubcar_media_post = array(
+							'post_title' => $this->ubcar_media_data_cleaner( $_POST['ubcar-media-title'] ),
+							'post_content' => $this->ubcar_media_data_cleaner( $_POST['ubcar-media-description'] ),
+							'post_status' => 'publish',
+							'post_type' => 'ubcar_media'
+						);
+						if( $_POST['ubcar-media-type'] == 'image' ) {
+							$ubcar_url = media_handle_upload( 'ubcar-media-upload', 0 );
+							if( is_wp_error( $ubcar_url ) ) {
+								wp_redirect( menu_page_url( 'ubcar-media', 0 ) . '&load=failure' );
+								exit;
+							}
+						} else if( $_POST['ubcar-media-type'] == 'audio' ) {
+							$ubcar_url = $this->ubcar_media_data_cleaner( $_POST['ubcar-audio-url'] );
+							$ubcar_media_post_meta['audio_type'] = $this->ubcar_media_data_cleaner( $_POST['ubcar-audio-type'] );
+						} else if( $_POST['ubcar-media-type'] == 'video' ) {
+							$ubcar_url = $this->ubcar_media_data_cleaner(  substr( $_POST['ubcar-video-url'], strrpos( $_POST['ubcar-video-url'], "=" ) ) );
+							$ubcar_media_post_meta['video_type'] = $this->ubcar_media_data_cleaner(  $_POST['ubcar-video-type'] );
+						} else if( $_POST['ubcar-media-type'] == 'external' || $_POST['ubcar-media-type'] == 'wiki' ) {
+							if( $_POST['ubcar-media-type'] == 'external' ) {
+								$ubcar_url_string = esc_url( $_POST['ubcar-external-url'] );
+							} else if( $_POST['ubcar-media-type'] == 'wiki' ) {
+								$ubcar_url_string = esc_url( $_POST['ubcar-wiki-url'] );
+								$ubcar_media_post['post_content'] = 'n/a';
+							}
+							$ubcar_url_array = parse_url( $ubcar_url_string );
+							if( isset( $ubcar_url_array['scheme'] ) ) {
+								$ubcar_url .= $ubcar_url_string;
+							} else {
+								$ubcar_url .= 'http://' . $ubcar_url_string;
+							}
+						} else if( $_POST['ubcar-media-type'] == 'imagewp' ) {
+							$ubcar_url = $this->ubcar_media_data_cleaner( $_POST['ubcar-wp-image-url'] );
+						}
+						$ubcar_media_post_meta['type'] = $this->ubcar_media_data_cleaner( $_POST['ubcar-media-type'] );
+						if( $_POST['ubcar-media-type'] == 'imagewp' ) {
+							$ubcar_media_post_meta['type'] = 'image';
+						}
+						$ubcar_media_post_meta['url'] =  $ubcar_url;
+						$ubcar_media_post_meta['location'] = $this->ubcar_media_data_cleaner( $_POST['ubcar-hidden-request-location'] );
+						$ubcar_media_post_meta['layers'] = array();
+						if( isset( $_POST['ubcar-media-layers'] ) ) {
+							$ubcar_media_post_meta['layers'] = $this->ubcar_media_data_cleaner( $_POST['ubcar-media-layers'] );
+						}
+						if( isset( $_POST['ubcar-media-visibility'] ) ) {
+							$ubcar_media_post_meta['hidden'] = 'on';
+						} else {
+							$ubcar_media_post_meta['hidden'] = 'off';
+						}
+						$ubcar_media_id = wp_insert_post( $ubcar_media_post );
+						add_post_meta( $ubcar_media_id, 'ubcar_media_meta', $ubcar_media_post_meta );
+						foreach( $ubcar_media_post_meta['layers'] as $layer ) {
+							$layer_media = get_post_meta( $layer, 'ubcar_layer_media', true );
+							if( $layer_media == null ) {
+								$layer_media = array();
+							}
+							array_push( $layer_media, $ubcar_media_id );
+							update_post_meta( $layer, 'ubcar_layer_media',  $this->ubcar_media_data_cleaner( $layer_media ) );
+							$layer_points = get_post_meta( $layer, 'ubcar_layer_points', true );
+							if( $layer_points == null ) {
+								$layer_points = array();
+							}
+							array_push( $layer_points, array( $ubcar_media_id, $this->ubcar_media_data_cleaner( $_POST['ubcar-hidden-request-location'] ) ) );
+							update_post_meta( $layer, 'ubcar_layer_points',  $layer_points );
+						}
+						$ubcar_location_media = get_post_meta( $_POST['ubcar-hidden-request-location'], 'ubcar_point_media', true );
+						if( $ubcar_location_media == null ) {
+							$ubcar_location_media = array();
+						}
+						array_push( $ubcar_location_media, $ubcar_media_id );
+						update_post_meta( $this->ubcar_media_data_cleaner( $_POST['ubcar-hidden-request-location'] ), 'ubcar_point_media', $ubcar_location_media );
+
+					}
+					$return_pathway = explode( '?' , $_SERVER['REQUEST_URI'] );
+					$return_url = plugins_url( 'ubcar-data/ubcar-post-redirect-get.php', dirname( __FILE__ ) ) . '?return=' . $return_pathway[0] . '&point_map=' . $_POST['ubcar-hidden-request-location'];
+					wp_redirect( $return_url );
+					exit;
+				}
+			}
 
 	}
 ?>
