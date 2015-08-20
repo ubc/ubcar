@@ -1,0 +1,38 @@
+.ubcar-content {
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+}
+
+#page, #page * {
+    display: none !important;
+}
+
+.ubcar-informational-right-column {
+    width: 100%;
+}
+
+.ubcar-header {
+    margin-top: 10px;
+}
+
+#ubcar-header-loginout a {
+    display: block;
+    border: 1px solid #002145;
+    background: #335478;
+    padding: 2px;
+    margin-bottom: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
+    border-radius: 3px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#wpadminbar {
+    display: none !important;
+}
