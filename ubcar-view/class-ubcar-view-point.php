@@ -55,9 +55,9 @@
 		}
 
         function parse_request( $wp ) {
-            if( isset( $_GET['ubcar_point_view'] ) && isset( $_GET['point'] ) ) {
+            if( isset( $_GET['ubcar_point_view'] ) ) {
               $this->ubcar_media_data_handler();
-                if( get_post_type( $_GET['point'] ) == 'ubcar_point' ) {
+                if( get_post_type( $_GET['ubcar_point_view'] ) == 'ubcar_point' ) {
                     $this->ubcar_make_map();
                 }
             }
@@ -184,6 +184,7 @@
                   <td>
                     <select id="ubcar-video-type" name="ubcar-video-type" class="">
                       <option value="youtube">YouTube</option>
+                      <option value="vimeo">Vimeo</option>
                     </select>
                   </td>
                 </tr>
@@ -236,7 +237,7 @@
                 </tr>
                 <tr>
                   <th scope="row">
-                    <?php echo '<input type="hidden" value="' . $_GET['point'] . '" id="ubcar-hidden-request-location" name="ubcar-hidden-request-location">'; ?>
+                    <?php echo '<input type="hidden" value="' . $_GET['ubcar_point_view'] . '" id="ubcar-hidden-request-location" name="ubcar-hidden-request-location">'; ?>
                     <input class="button button-primary" name="ubcar-media-submit" id="ubcar-media-submit" type="submit" value="Upload">
                   </th>
                 </tr>
@@ -253,18 +254,23 @@
             ?>
 
           </div>
-          <div id="ubcar-header-loginout"><?php wp_loginout($_SERVER['REQUEST_URI'], true); ?></div>
+          <div id="ubcar-header-loginout">
+              <?php
+              echo wp_loginout( 'http' . (empty($_SERVER['HTTPS']) ? '' : 's' ) . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] . '&point=' . $_GET['ubcar_point_view'], true);
+
+              ?>
+          </div>
 
 				</div>
 			</div>
 		<?php
 			// determine if a GET request is being made and populate extra fields for JavaScript detection
-			if( ( isset( $_GET['point'] ) && is_numeric( $_GET['point'] ) ) || ( isset( $_GET['layer'] ) && is_numeric( $_GET['layer'] ) ) || ( isset( $_GET['tour'] ) && is_numeric( $_GET['tour'] ) ) ) {
+			if( ( isset( $_GET['ubcar_point_view'] ) && is_numeric( $_GET['ubcar_point_view'] ) ) || ( isset( $_GET['layer'] ) && is_numeric( $_GET['layer'] ) ) || ( isset( $_GET['tour'] ) && is_numeric( $_GET['tour'] ) ) ) {
 				$request_type = "";
 				$request_value = "";
-				if( isset( $_GET['point'] ) ) {
+				if( isset( $_GET['ubcar_point_view'] ) ) {
 					$request_type = 'ubcar_point';
-					$request_value = $_GET['point'];
+					$request_value = $_GET['ubcar_point_view'];
 					$request_post_meta = get_post_meta( $request_value );
 					if( isset( $request_post_meta ) && isset( $request_post_meta["ubcar_point_latitude"] ) ) {
 						$request_latitude = number_format( ( float )$request_post_meta["ubcar_point_latitude"][0], 7, '.', '' );
@@ -284,7 +290,7 @@
 				if( $ubcar_post_type == $request_type ) {
 					echo '<input type="hidden" value="' . $request_type . '" id="ubcar-hidden-request-type">';
 					echo '<input type="hidden" value="' . $request_value . '" id="ubcar-hidden-request-value">';
-					if( isset( $_GET['point'] ) ) {
+					if( isset( $_GET['ubcar_point_view'] ) ) {
 						echo '<input type="hidden" value="' . $request_latitude . '" id="ubcar-hidden-request-latitude">';
 						echo '<input type="hidden" value="' . $request_longitude . '" id="ubcar-hidden-request-longitude">';
 					}
@@ -298,9 +304,9 @@
 				if ( !isset( $_POST['ubcar-nonce-field'] ) || !wp_verify_nonce( $_POST['ubcar-nonce-field'],'ubcar_nonce_check' ) ) {
 					die();
 				} else {
-          require_once( ABSPATH . 'wp-admin/includes/image.php' );
-	require_once( ABSPATH . 'wp-admin/includes/file.php' );
-	require_once( ABSPATH . 'wp-admin/includes/media.php' );
+                    require_once( ABSPATH . 'wp-admin/includes/image.php' );
+	                require_once( ABSPATH . 'wp-admin/includes/file.php' );
+	                require_once( ABSPATH . 'wp-admin/includes/media.php' );
 					$ubcar_url = "";
 					$ubcar_media_post_meta = array();
 					$ubcar_media_post = array(
@@ -376,7 +382,7 @@
 					update_post_meta( $this->ubcar_media_data_cleaner( $_POST['ubcar-hidden-request-location'] ), 'ubcar_point_media', $ubcar_location_media );
 
 				}
-				$return_url = plugins_url( 'ubcar-data/ubcar-post-redirect-get.php', dirname( __FILE__ ) ) . '?return=' . $_SERVER['REQUEST_URI'] . '&point=' . $_POST['ubcar-hidden-request-location'];
+				$return_url = plugins_url( 'ubcar-data/ubcar-post-redirect-get.php', dirname( __FILE__ ) ) . '?return=' . 'http'.(empty($_SERVER['HTTPS'])?'':'s').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] . '&view_point=' . $_POST['ubcar-hidden-request-location'];
 				wp_redirect( $return_url );
 				exit;
 			}
@@ -402,7 +408,7 @@
 			echo ' id="ubcar-comment-';
 			comment_ID();
 			echo '">';
-			echo  '<div class="ubcar-comment-header">' . $user->first_name . " " . $user->last_name . " ( " . $comment->comment_author . " ) - " . get_comment_date() . " " .  get_comment_time() . '</div>';
+			echo  '<div class="ubcar-comment-header">' . $user->first_name . " " . $user->last_name . " (" . $comment->comment_author . ") - " . get_comment_date() . " " .  get_comment_time() . '</div>';
 			if( is_user_logged_in() ) {
 				echo '<div class="ubcar-comment-header ubcar-comment-reply" id="ubcar-comment-reply-' . get_comment_ID() . '"> - <a>Reply</a></div>';
 			}
@@ -741,7 +747,10 @@
 			} else {
 				$tempArray["url"] = $ubcar_media_meta['url'];
 			}
-			$tempArray["uploader"] = $ubcar_media_author->first_name . ' ' . $ubcar_media_author->last_name . ' ( ' . $ubcar_media_author->user_login . ' )';
+      if( $ubcar_media_meta['type'] == 'video' ) {
+				$tempArray["video_type"] = $ubcar_media_meta['video_type'];
+			}
+			$tempArray["uploader"] = $ubcar_media_author->first_name . ' ' . $ubcar_media_author->last_name . ' (' . $ubcar_media_author->user_login . ')';
 			$tempArray["title"] = $ubcar_media->post_title;
 			$tempArray["date"] = date( 'F j, Y', strtotime( get_the_date( 'Y-m-d', $ubcar_media->ID ) ) );
 			$tempArray["description"] = $ubcar_media->post_content;

@@ -1,11 +1,11 @@
 <?php
 	/**
 	 * The UBCAR_Admin_Medium subclass
-	 * 
+	 *
 	 * This file defines the UBCAR_Admin_Medium subclass. The UBCAR_Admin_Medium
 	 * class manages ubcar_medium-type posts. ubcar_medium-type posts have one
 	 * extra piece of metadata:
-	 * 
+	 *
 	 * - ubcar_media_meta: an array of metadata for this ubcar_medium post:
 	 *   - type: the type of media uploaded.
 	 *	 - image: the ID of an image uploaded to the WordPress gallery
@@ -27,43 +27,43 @@
 	 *   - layers: an array of the ubcar_layer post IDs associated with this
 	 *	   point
 	 *   - hidden: determines if the media file is displayed on the front-end
-	 * 
+	 *
 	 * Additionally, the UBCAR_Admin_Medium class manages the following metadata
 	 * for other classes:
-	 * 
-	 * 1. ( UBCAR_Admin_Layer ) ubcar_layer_media 
-	 * 2. ( UBCAR_Admin_Layer ) ubcar_layer_points 
+	 *
+	 * 1. ( UBCAR_Admin_Layer ) ubcar_layer_media
+	 * 2. ( UBCAR_Admin_Layer ) ubcar_layer_points
 	 * 3. ( UBCAR_Admin_Point ) ubcar_point_media
-	 * 
+	 *
 	 * These metadata allow WordPress to quickly determine all media associated
 	 * with a point ( #3 ), all points that contain media of a layer ( #2 ), and all
 	 * media within a single layer ( #1 ).
-	 * 
+	 *
 	 * UBCAR_Admin_Medium does not use AJAX to upload media files because it was
 	 * a pain to try and implement. It instead uses the PRG design pattern.
-	 * 
+	 *
 	 * @package UBCAR
-	 */	
+	 */
 
 	/*
 	 * The UBCAR_Admin_Tour subclass
 	 */
 	class UBCAR_Admin_Medium extends UBCAR_Admin {
-	
+
 		/**
 		 * The UBCAR_Admin_Tour constructor.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		public function __construct() {
 			$this->add_actions();
 		}
-		
+
 		/**
 		 * This function adds the UBCAR_Admin_Medium actions,including its AJAX
 		 * callback hooks and upload detection hooks.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -72,14 +72,15 @@
 			add_action( 'wp_ajax_media_forward', array( $this, 'ubcar_media_forward' ) );
 			add_action( 'wp_ajax_media_backward', array( $this, 'ubcar_media_backward' ) );
 			add_action( 'wp_ajax_media_delete', array( $this, 'ubcar_media_delete' ) );
+			add_action( 'wp_ajax_media_goto', array( $this, 'ubcar_media_goto' ) );
 			add_action( 'wp_ajax_media_edit', array( $this, 'ubcar_media_edit' ) );
 			add_action( 'wp_ajax_media_edit_submit', array( $this, 'ubcar_media_edit_submit' ) );
 			add_action( 'admin_init', array( $this, 'ubcar_media_data_handler' ) );
 		}
-		
+
 		/**
 		 * This function initializes the main UBCAR Media menu page.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
@@ -148,6 +149,7 @@
 						<td>
 							<select id="ubcar-video-type" name="ubcar-video-type" class="">
 								<option value="youtube">YouTube</option>
+								<option value="vimeo">Vimeo</option>
 							</select>
 						</td>
 					</tr>
@@ -242,9 +244,13 @@
 			</div>
 			<table class="ubcar-table" id="ubcar-media-table">
 			</table>
+			<div class="ubcar-goto">
+				<input type="text" id="ubcar-media-choose-count" style="width:40px;">
+				<input type="submit" id="ubcar-media-goto" value="Go to Page">
+			</div>
 			<div class="ubcar-forward-back">
 				<a class="ubcar-forward-back-control" id="ubcar-media-back">Prev</a>
-				<span id="ubcar-media-display-count">1</span>
+				<span id="ubcar-media-display-count">1</span> of <span id="ubcar-media-max-count"><?php echo max( ( ceil( wp_count_posts('ubcar_media')->publish / 25 ) ), 1 ); ?></span>
 				<a class="ubcar-forward-back-control" id="ubcar-media-forward">Next</a>
 			</div>
 			<?php
@@ -254,12 +260,12 @@
 				echo '<input type="hidden" id="ubcar-author-name" value="">';
 			}
 		}
-		
+
 		/**
 		 * This is function detects if a media file upload is being requested,
 		 * performs the upload, and redirects to ubcar-data/
 		 * ubcar-post-redirect-get.php.
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -272,7 +278,7 @@
 				} else {
 					$ubcar_url = "";
 					$ubcar_media_post_meta = array();
-					$ubcar_media_post = array( 
+					$ubcar_media_post = array(
 						'post_title' => $this->ubcar_media_data_cleaner( $_POST['ubcar-media-title'] ),
 						'post_content' => $this->ubcar_media_data_cleaner( $_POST['ubcar-media-description'] ),
 						'post_status' => 'publish',
@@ -343,28 +349,28 @@
 					}
 					array_push( $ubcar_location_media, $ubcar_media_id );
 					update_post_meta( $this->ubcar_media_data_cleaner( $_POST['ubcar-media-location'] ), 'ubcar_point_media', $ubcar_location_media );
-					
+
 				}
 				$return_url = plugins_url( 'ubcar-data/ubcar-post-redirect-get.php', dirname( __FILE__ ) ) . '?return=' . menu_page_url( 'ubcar-media', 0 );
 				wp_redirect( $return_url );
 				exit;
 			}
 		}
-	
+
 		/**
 		 * This is the helper function for retrieving a set of ubcar_medium data
 		 * from the database, converting it to JSON, and echoing it.
-		 * 
+		 *
 		 * @param int $ubcar_media_offset
 		 * @param string $ubcar_author_name
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
 		 */
 		function ubcar_media_get_medias( $ubcar_media_offset, $ubcar_author_name ) {
 			global $wpdb;
-			$ubcar_get_medias_parameters = array( 'posts_per_page' => 10, 'offset' => $ubcar_media_offset, 'order' => 'DESC', 'post_type' => 'ubcar_media' );
+			$ubcar_get_medias_parameters = array( 'posts_per_page' => 25, 'offset' => $ubcar_media_offset, 'order' => 'DESC', 'post_type' => 'ubcar_media' );
 			if( $ubcar_author_name != '' ) {
 				$ubcar_get_medias_parameters['author_name'] = $ubcar_author_name;
 			}
@@ -380,13 +386,13 @@
 			}
 			wp_send_json( $response );
 		}
-		
+
 		/**
 		 * This is the helper function for cleaning a set of ubcar_medium data
 		 * sent by a user.
 		 *
 		 * @param string $ubcar_string_to_be_cleaned
-		 * 
+		 *
 		 * @access public
 		 * @return string
 		 */
@@ -394,16 +400,16 @@
 
 		$bad_characters  = array( "&",	 "<",	">",	'"',	  "'",	 "/",	  "\n" );
 		$good_characters = array( "&amp;", "&lt;", "&gt;", '&quot;', '&#39;', '&#x2F;', '<br />' );
-	
+
 		return str_replace( $bad_characters, $good_characters, $ubcar_string_to_be_cleaned );
 		}
-		
+
 		/**
 		 * This is a helper function for retrieving a single ubcar_medium datum
 		 * and metadata from the database.
-		 * 
+		 *
 		 * @param int $ubcar_media_id
-		 * 
+		 *
 		 * @access public
 		 * @return array
 		 */
@@ -421,7 +427,10 @@
 				$tempArray["url"] = $ubcar_media_meta['url'];
 				$tempArray["type"] = $ubcar_media_meta['type'];
 			}
-			$tempArray["uploader"] = $ubcar_media_author->first_name . ' ' . $ubcar_media_author->last_name . ' ( ' . $ubcar_media_author->user_login . ' )';
+			if( $ubcar_media_meta['type'] == 'video' ) {
+				$tempArray["video_type"] = $ubcar_media_meta['video_type'];
+			}
+			$tempArray["uploader"] = $ubcar_media_author->first_name . ' ' . $ubcar_media_author->last_name . ' (' . $ubcar_media_author->user_login . ')';
 			$tempArray["title"] = $ubcar_media->post_title;
 			$tempArray["date"] = get_the_date( 'Y-m-d', $ubcar_media->ID );
 			$tempArray["description"] = $ubcar_media->post_content;
@@ -451,50 +460,67 @@
 			$tempArray["layers"] = $ubcar_media_layer_names;
 			return $tempArray;
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-media_updater.js's
 		 * initial AJAX request, displaying a set of ubcar_medium posts.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		function ubcar_media_initial() {
 			$this->ubcar_media_get_medias( 0, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-medium-updater.js's
 		 * forward_medias() AJAX request, displaying the next set of
 		 * ubcar_medium posts.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		function ubcar_media_forward() {
-			$this->ubcar_media_get_medias( intval( $_POST['ubcar_media_offset'] ) * 10, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
+			$this->ubcar_media_get_medias( intval( $_POST['ubcar_media_offset'] ) * 25, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-medium-updater.js's
 		 * backward_medias() AJAX request, displaying the previous set of
 		 * ubcar_medium posts.
-		 * 
+		 *
 		 * @access public
 		 * @return void
 		 */
 		function ubcar_media_backward() {
-			$back_media = ( intval( $_POST['ubcar_media_offset'] ) - 2 ) * 10;
+			$back_media = ( intval( $_POST['ubcar_media_offset'] ) - 2 ) * 25;
 			if( $back_media < 0 ) {
 				$back_media = 0;
 			}
 			$this->ubcar_media_get_medias( $back_media, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
 		}
-		
+
+		/**
+		 * This is the callback function for ubcar-media-updater.js's
+		 * goto_medias() AJAX request, displaying the selected set of
+		 * ubcar_media posts.
+		 *
+		 * @access public
+		 * @return void
+		 */
+		function ubcar_media_goto() {
+			$goto_media = ( intval( $_POST['ubcar_media_offset'] ) - 1 ) * 25;
+			if( $goto_media < 0 ) {
+				$goto_media = 0;
+			}
+			$this->ubcar_media_get_medias( $goto_media, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
+		}
+
+
 		/**
 		 * This is the callback function for ubcar-media-updater.js's
 		 * delete_medias() AJAX request, deleting an ubcar_medium post
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -536,18 +562,18 @@
 							}
 						}
 					}
-					
+
 					wp_delete_post( $_POST['ubcar_media_delete_id'] );
 					$this->ubcar_media_get_medias( 0, $this->ubcar_media_data_cleaner( $_POST['ubcar_author_name'] ) );
 				}
 			}
 			die();
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-media-updater.js's
 		 * edit_medias() AJAX request, retrieving a single medium.
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -587,11 +613,11 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * This is the callback function for ubcar-media-updater.js's
 		 * edit_medias_submit() AJAX request, updating the ubcar_medium post.
-		 * 
+		 *
 		 * @access public
 		 * @global object $wpdb
 		 * @return void
@@ -605,7 +631,7 @@
 				if( get_current_user_id() != $edit_post->post_author && !current_user_can( 'edit_pages' ) ) {
 					echo 0;
 				} else {
-					$update_array = array( 
+					$update_array = array(
 						'ID' => $this->ubcar_media_data_cleaner( $_POST['ubcar_media_edit_id'] ),
 						'post_title' => $this->ubcar_media_data_cleaner( $_POST['ubcar_media_title'] ),
 						'post_content' => $this->ubcar_media_data_cleaner( $_POST['ubcar_media_description'] )
@@ -620,7 +646,7 @@
 					}
 					wp_update_post( $update_array );
 					update_post_meta( $this->ubcar_media_data_cleaner( $_POST['ubcar_media_edit_id'] ), 'ubcar_media_meta',  $update_array_meta  );
-					
+
 					// check if layers have been added; update ubcar_layer_media and ubcar_layer_points metadata
 					if( isset ( $_POST['ubcar_media_added_layers'] ) ) {
 						foreach( $_POST['ubcar_media_added_layers'] as $layer ) {
@@ -640,7 +666,7 @@
 							}
 						}
 					}
-					
+
 					// check if layers have been removed; update ubcar_layer_media and upcar_layer_points metadata
 					if( isset( $_POST['ubcar_media_removed_layers'] ) ) {
 						foreach( $_POST['ubcar_media_removed_layers'] as $layer ) {
@@ -667,7 +693,7 @@
 							}
 						}
 					}
-					
+
 					// check if media file has changed location; update ubcar_point_media and ubcar_layer_points metadata
 					if( $_POST['ubcar_media_old_location'] != $_POST['ubcar_media_location'] ) {
 						$location_media = get_post_meta( $_POST['ubcar_media_location'], 'ubcar_point_media', true );
@@ -706,5 +732,5 @@
 		}
 
 	}
-	
+
 ?>
